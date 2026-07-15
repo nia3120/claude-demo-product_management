@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Livotec · Product Management Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+/* ============================= TOKENS ============================= */
+:root{
+  --mint-900:#063D33; --mint-700:#0E7C63; --mint-600:#12977A; --mint-500:#1BB894;
+  --mint-200:#BFE8DC; --mint-100:#E7F7F2; --mint-50:#F5FBF9;
+  --ink-900:#0E211C; --ink-700:#324A43; --ink-500:#6C8079; --ink-300:#9FB0AA;
+  --line:#DEEBE5; --line-strong:#C7DCD4; --white:#FFFFFF;
+  --amber:#DE9A2E; --amber-bg:#FCF2DF;
+  --red:#D65B5B; --red-bg:#FBEBEB;
+  --blue:#3E76D6; --blue-bg:#EAF1FC;
+  --star:#12977A; --grow:#3E76D6; --milk:#DE9A2E; --kill:#D65B5B;
+  --radius:14px; --radius-sm:9px;
+  --shadow-sm:0 1px 2px rgba(14,33,28,.06), 0 1px 1px rgba(14,33,28,.04);
+  --shadow-md:0 6px 20px rgba(14,33,28,.08);
+  --sidebar-w:248px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Be Vietnam Pro',-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--mint-50);
+  color:var(--ink-900);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.num, .mono{font-family:'JetBrains Mono',ui-monospace,monospace; font-variant-numeric:tabular-nums;}
+h1,h2,h3,h4{margin:0; font-weight:700; letter-spacing:-.01em;}
+button{font-family:inherit; cursor:pointer;}
+a{color:inherit;}
+::selection{background:var(--mint-200);}
+:focus-visible{outline:2px solid var(--mint-600); outline-offset:2px;}
+
+/* ============================= LAYOUT ============================= */
+.app{display:flex; min-height:100vh;}
+.sidebar{
+  width:var(--sidebar-w); flex:0 0 auto; background:var(--mint-900);
+  color:var(--mint-100); display:flex; flex-direction:column; position:sticky; top:0; height:100vh;
+}
+.brand{display:flex; align-items:center; gap:10px; padding:22px 20px 18px; border-bottom:1px solid rgba(255,255,255,.08);}
+.brand-mark{
+  width:34px; height:34px; border-radius:10px; background:linear-gradient(145deg,var(--mint-500),var(--mint-700));
+  display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:15px; flex:0 0 auto;
+}
+.brand-text{line-height:1.15;}
+.brand-text .name{font-weight:800; font-size:15.5px; color:#fff;}
+.brand-text .sub{font-size:11px; color:var(--mint-200); letter-spacing:.04em; text-transform:uppercase;}
+
+.nav{flex:1; overflow-y:auto; padding:14px 10px;}
+.nav-group{margin-bottom:6px;}
+.nav-label{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:rgba(230,247,242,.45); padding:14px 10px 6px;}
+.nav-item{
+  display:flex; align-items:center; gap:10px; width:100%; border:none; background:none; color:rgba(255,255,255,.82);
+  padding:10px 12px; border-radius:10px; font-size:13.8px; font-weight:500; text-align:left; margin-bottom:2px; transition:background .12s,color .12s;
+}
+.nav-item svg{flex:0 0 auto; opacity:.85;}
+.nav-item:hover{background:rgba(255,255,255,.07); color:#fff;}
+.nav-item.active{background:var(--mint-600); color:#fff; font-weight:600;}
+.nav-item.active svg{opacity:1;}
+.nav-item .badge{margin-left:auto; background:rgba(255,255,255,.15); font-size:10.5px; padding:1px 7px; border-radius:99px; font-weight:700;}
+.nav-item.alert .badge{background:var(--kill); color:#fff;}
+
+.sidebar-foot{padding:14px 18px 18px; border-top:1px solid rgba(255,255,255,.08); font-size:11.5px; color:rgba(230,247,242,.55);}
+.conn-row{display:flex; align-items:center; gap:7px; margin-bottom:4px;}
+.dot{width:8px; height:8px; border-radius:50%; background:var(--ink-300); flex:0 0 auto;}
+.dot.on{background:#5FDCB2; box-shadow:0 0 0 3px rgba(95,220,178,.25);}
+.dot.mock{background:var(--amber); box-shadow:0 0 0 3px rgba(222,154,46,.25);}
+
+.main{flex:1; min-width:0; display:flex; flex-direction:column;}
+.topbar{
+  position:sticky; top:0; z-index:20; background:rgba(245,251,249,.9); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line); padding:16px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.topbar h1{font-size:19px;}
+.topbar .crumb{font-size:12.5px; color:var(--ink-500); font-weight:500; margin-bottom:2px;}
+.top-actions{display:flex; align-items:center; gap:10px;}
+
+.pill{display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:99px; font-size:12.5px; font-weight:600; border:1px solid var(--line-strong); background:#fff;}
+.pill.ok{color:var(--mint-700); border-color:var(--mint-200); background:var(--mint-100);}
+.pill.mock{color:var(--amber); border-color:#F0DDB0; background:var(--amber-bg);}
+
+.switch{display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:600; color:var(--ink-700);}
+.switch-track{width:38px; height:22px; border-radius:99px; background:var(--line-strong); position:relative; transition:background .15s;}
+.switch-track::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; box-shadow:var(--shadow-sm); transition:transform .15s;}
+.switch.on .switch-track{background:var(--mint-600);}
+.switch.on .switch-track::after{transform:translateX(16px);}
+
+.btn{display:inline-flex; align-items:center; gap:7px; padding:8px 15px; border-radius:10px; font-size:13px; font-weight:600; border:1px solid var(--line-strong); background:#fff; color:var(--ink-700); transition:all .12s;}
+.btn:hover{border-color:var(--mint-500); color:var(--mint-700);}
+.btn.primary{background:var(--mint-600); border-color:var(--mint-600); color:#fff;}
+.btn.primary:hover{background:var(--mint-700); border-color:var(--mint-700); color:#fff;}
+.btn.ghost{border-color:transparent; background:transparent;}
+.btn.sm{padding:5px 10px; font-size:12px; border-radius:8px;}
+.btn:disabled{opacity:.5; cursor:not-allowed;}
+.btn svg{flex:0 0 auto;}
+
+.content{flex:1; padding:24px 28px 60px;}
+.view{display:none;}
+.view.active{display:block; animation:fade .25s ease;}
+@keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+
+/* ============================= GRID / CARDS ============================= */
+.grid{display:grid; gap:16px;}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+@media(max-width:1200px){.grid-4{grid-template-columns:repeat(2,1fr);} .grid-3{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:760px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr;}}
+
+.card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow-sm);}
+.card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:10px;}
+.card-head h3{font-size:14.5px; color:var(--ink-900);}
+.card-head .hint{font-size:12px; color:var(--ink-500); font-weight:500;}
+
+.kpi-card{position:relative; overflow:hidden;}
+.kpi-card .label{font-size:12.5px; color:var(--ink-500); font-weight:600; margin-bottom:8px; display:flex; align-items:center; gap:6px;}
+.kpi-card .value{font-size:26px; font-weight:800; font-family:'JetBrains Mono',monospace; letter-spacing:-.02em;}
+.kpi-card .delta{display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700; margin-top:8px; padding:2px 8px; border-radius:99px;}
+.delta.up{color:var(--mint-700); background:var(--mint-100);}
+.delta.down{color:var(--kill); background:var(--red-bg);}
+.kpi-card .icon-badge{position:absolute; top:16px; right:16px; width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center;}
+
+.section-title{display:flex; align-items:center; justify-content:space-between; margin:30px 0 14px;}
+.section-title h2{font-size:16px;}
+.section-title .desc{font-size:12.5px; color:var(--ink-500); margin-top:2px; font-weight:500;}
+
+/* tag pills for BCG lifecycle stage - reused across modules */
+.tag{display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:99px; font-size:11.5px; font-weight:700; white-space:nowrap;}
+.tag::before{content:''; width:6px; height:6px; border-radius:50%; background:currentColor;}
+.tag.grow{color:var(--grow); background:var(--blue-bg);}
+.tag.star{color:var(--star); background:var(--mint-100);}
+.tag.milk{color:var(--milk); background:var(--amber-bg);}
+.tag.kill{color:var(--kill); background:var(--red-bg);}
+.tag.neutral{color:var(--ink-500); background:#EEF3F1;}
+
+/* subtabs */
+.subtabs{display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:0;}
+.subtab{padding:9px 15px; font-size:13px; font-weight:600; color:var(--ink-500); background:none; border:none; border-bottom:2px solid transparent; margin-bottom:-1px;}
+.subtab:hover{color:var(--ink-900);}
+.subtab.active{color:var(--mint-700); border-bottom-color:var(--mint-600);}
+.subview{display:none;}
+.subview.active{display:block; animation:fade .2s ease;}
+
+/* table */
+.table-wrap{overflow-x:auto; border-radius:var(--radius); border:1px solid var(--line);}
+table{width:100%; border-collapse:collapse; background:#fff; font-size:13px;}
+thead th{
+  text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-500);
+  background:var(--mint-50); padding:10px 14px; border-bottom:1px solid var(--line); white-space:nowrap; font-weight:700;
+}
+tbody td{padding:10px 14px; border-bottom:1px solid var(--line); white-space:nowrap; color:var(--ink-700);}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--mint-50);}
+td.num, th.num{text-align:right; font-family:'JetBrains Mono',monospace;}
+td strong{color:var(--ink-900);}
+.editable-cell{position:relative;}
+.editable-cell input{
+  width:100%; border:1px solid transparent; background:transparent; font:inherit; color:inherit; padding:4px 6px; border-radius:6px;
+  font-family:'JetBrains Mono',monospace; text-align:right;
+}
+.edit-mode .editable-cell input{border-color:var(--line-strong); background:var(--mint-50);}
+.edit-mode .editable-cell input:focus{border-color:var(--mint-600); background:#fff;}
+
+.bar-cell{display:flex; align-items:center; gap:8px; min-width:140px;}
+.bar-track{flex:1; height:7px; border-radius:99px; background:var(--line); overflow:hidden;}
+.bar-fill{height:100%; border-radius:99px; background:var(--mint-600);}
+
+.progress-ring-wrap{display:flex; align-items:center; gap:14px;}
+
+.group-icon{width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:15px; flex:0 0 auto;}
+
+.chart-box{position:relative; height:260px;}
+.chart-box.sm{height:180px;}
+
+.two-col{display:grid; grid-template-columns:1.5fr 1fr; gap:16px;}
+@media(max-width:1000px){.two-col{grid-template-columns:1fr;}}
+
+.footer-note{margin-top:36px; padding-top:16px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-300); display:flex; justify-content:space-between;}
+
+/* toasts */
+#toast-container{position:fixed; bottom:20px; right:20px; z-index:200; display:flex; flex-direction:column; gap:8px;}
+.toast{background:var(--ink-900); color:#fff; padding:11px 16px; border-radius:10px; font-size:13px; font-weight:500; box-shadow:var(--shadow-md); display:flex; align-items:center; gap:8px; animation:toastin .2s ease;}
+.toast.ok{background:var(--mint-700);}
+.toast.warn{background:var(--amber);}
+@keyframes toastin{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+
+/* modal */
+.overlay{position:fixed; inset:0; background:rgba(14,33,28,.45); display:none; align-items:center; justify-content:center; z-index:100; padding:20px;}
+.overlay.show{display:flex;}
+.modal{background:#fff; border-radius:16px; width:100%; max-width:520px; max-height:88vh; overflow-y:auto; box-shadow:var(--shadow-md);}
+.modal-head{padding:18px 22px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
+.modal-head h3{font-size:15.5px;}
+.modal-body{padding:20px 22px; display:flex; flex-direction:column; gap:14px;}
+.modal-foot{padding:16px 22px; border-top:1px solid var(--line); display:flex; justify-content:flex-end; gap:10px;}
+.field{display:flex; flex-direction:column; gap:6px;}
+.field label{font-size:12.5px; font-weight:700; color:var(--ink-700);}
+.field input, .field select, .field textarea{
+  border:1px solid var(--line-strong); border-radius:9px; padding:9px 11px; font:inherit; font-size:13.5px; color:var(--ink-900); background:var(--mint-50);
+}
+.field input:focus, .field select:focus, .field textarea:focus{background:#fff; border-color:var(--mint-600);}
+.field-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+
+.close-x{border:none; background:none; color:var(--ink-500); width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center;}
+.close-x:hover{background:var(--mint-50); color:var(--ink-900);}
+
+.empty{text-align:center; padding:40px 20px; color:var(--ink-500);}
+.empty svg{margin-bottom:10px; opacity:.5;}
+
+.alert-item{display:flex; gap:12px; padding:14px 16px; border:1px solid var(--line); border-radius:12px; margin-bottom:10px; background:#fff;}
+.alert-item .ic{width:34px; height:34px; border-radius:10px; flex:0 0 auto; display:flex; align-items:center; justify-content:center;}
+.alert-item .body{flex:1;}
+.alert-item .title{font-weight:700; font-size:13.5px; margin-bottom:2px;}
+.alert-item .desc{font-size:12.5px; color:var(--ink-500);}
+.alert-item.sev-high .ic{background:var(--red-bg); color:var(--kill);}
+.alert-item.sev-mid .ic{background:var(--amber-bg); color:var(--amber);}
+.alert-item.sev-low .ic{background:var(--blue-bg); color:var(--blue);}
+
+.todo-item{display:flex; align-items:center; gap:10px; padding:10px 14px; border:1px solid var(--line); border-radius:10px; margin-bottom:8px; background:#fff;}
+.todo-item input[type=checkbox]{width:17px; height:17px; accent-color:var(--mint-600);}
+.todo-item.done .todo-text{text-decoration:line-through; color:var(--ink-300);}
+.todo-text{flex:1; font-size:13.5px;}
+.todo-del{border:none; background:none; color:var(--ink-300); padding:4px;}
+.todo-del:hover{color:var(--kill);}
+
+.stage-track{display:flex; gap:4px; margin-top:16px;}
+.stage-seg{flex:1; height:8px; border-radius:99px; background:var(--line);}
+.stage-seg.done{background:var(--mint-600);}
+.stage-seg.current{background:var(--milk);}
+
+.settings-form{max-width:620px;}
+.help-box{background:var(--mint-100); border:1px solid var(--mint-200); border-radius:12px; padding:14px 16px; font-size:12.8px; color:var(--mint-900); line-height:1.6;}
+.help-box code{background:#fff; padding:1px 6px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:11.8px; border:1px solid var(--mint-200);}
+
+@media(max-width:900px){
+  .sidebar{position:fixed; left:0; top:0; bottom:0; transform:translateX(-100%); transition:transform .2s; z-index:50;}
+  .sidebar.open{transform:none;}
+  .main{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ============================= SIDEBAR ============================= -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">LV</div>
+      <div class="brand-text">
+        <div class="name">Livotec</div>
+        <div class="sub">Product Management</div>
+      </div>
+    </div>
+    <nav class="nav" id="navList"></nav>
+    <div class="sidebar-foot">
+      <div class="conn-row"><span class="dot" id="sideDot"></span><span id="sideConnText">Chưa kết nối Google Sheet</span></div>
+      <div id="sideSyncText">Dữ liệu mẫu (demo)</div>
+    </div>
+  </aside>
+
+  <!-- ============================= MAIN ============================= -->
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <div class="crumb" id="crumbText">Product Management</div>
+        <h1 id="pageTitle">Tổng quan</h1>
+      </div>
+      <div class="top-actions">
+        <div class="switch" id="editSwitch" role="button" tabindex="0">
+          <span>Chế độ chỉnh sửa</span>
+          <span class="switch-track"></span>
+        </div>
+        <span class="pill mock" id="connPill">● Chế độ xem mẫu</span>
+        <button class="btn" id="syncBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+          Đồng bộ
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ================= 1. TỔNG QUAN ================= -->
+      <section class="view active" id="view-tong-quan">
+        <div class="grid grid-4" id="kpiRow"></div>
+
+        <div class="section-title">
+          <div><h2>Doanh số &amp; tồn kho 12 tháng</h2><div class="desc">Toàn ngành hàng — thực tế so với kế hoạch</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card"><div class="card-head"><h3>Doanh thu thực tế vs kế hoạch (triệu đ)</h3><span class="hint">Năm 2026</span></div>
+            <div class="chart-box"><canvas id="chartOverviewRevenue"></canvas></div>
+          </div>
+          <div class="card"><div class="card-head"><h3>Tỷ trọng doanh thu theo nhóm hàng</h3><span class="hint">YTD</span></div>
+            <div class="chart-box"><canvas id="chartOverviewShare"></canvas></div>
+          </div>
+        </div>
+
+        <div class="section-title">
+          <div><h2>Tổng quan theo nhóm sản phẩm</h2><div class="desc">Doanh thu YTD, tồn kho hiện tại, tiến độ kế hoạch năm</div></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Nhóm sản phẩm</th><th class="num">DT YTD (tr đ)</th><th class="num">KH năm (tr đ)</th>
+              <th>Tiến độ KH năm</th><th class="num">Tồn kho (chiếc)</th><th>Sức khỏe tồn kho</th><th>Vòng đời BCG</th>
+            </tr></thead>
+            <tbody id="overviewGroupTable"></tbody>
+          </table>
+        </div>
+
+        <div class="section-title">
+          <div><h2>Cảnh báo nổi bật</h2><div class="desc">Xem chi tiết tại mục Cảnh báo &amp; công việc</div></div>
+          <button class="btn ghost sm" data-goto="canh-bao">Xem tất cả →</button>
+        </div>
+        <div id="overviewAlerts"></div>
+      </section>
+
+      <!-- ================= 2. KINH DOANH & TỒN KHO ================= -->
+      <section class="view" id="view-kd-ton-kho">
+        <div class="subtabs" id="kdSubtabs">
+          <button class="subtab active" data-sub="thang">Theo tháng</button>
+          <button class="subtab" data-sub="quy">Theo quý</button>
+          <button class="subtab" data-sub="ytd">Year to Date</button>
+          <button class="subtab" data-sub="kehoach">Tiến độ so với kế hoạch năm</button>
+          <button class="subtab" data-sub="nhom">Theo nhóm sản phẩm</button>
+        </div>
+
+        <div class="subview active" id="sub-thang">
+          <div class="card-head" style="margin-bottom:14px;">
+            <h3 style="font-size:13.5px; color:var(--ink-500); font-weight:600;">Chọn tháng xem chi tiết</h3>
+            <select id="monthPicker" style="border:1px solid var(--line-strong); border-radius:9px; padding:7px 12px; font:inherit; background:#fff;"></select>
+          </div>
+          <div class="grid grid-3" id="monthKpi"></div>
+          <div class="card" style="margin-top:16px;">
+            <div class="card-head"><h3>Doanh số &amp; tồn kho theo nhóm sản phẩm — tháng đã chọn</h3><span class="hint" id="editHintThang">Bật "Chế độ chỉnh sửa" để nhập số liệu thực tế</span></div>
+            <div class="table-wrap">
+              <table id="tableThang"><thead><tr>
+                <th>Nhóm sản phẩm</th><th class="num">Kế hoạch (chiếc)</th><th class="num">Thực tế (chiếc)</th>
+                <th>% đạt</th><th class="num">Doanh thu (tr đ)</th><th class="num">Tồn kho cuối kỳ</th><th class="num">Tồn kho mục tiêu</th>
+              </tr></thead><tbody></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <div class="subview" id="sub-quy">
+          <div class="grid grid-4" id="quarterKpi" style="margin-bottom:16px;"></div>
+          <div class="card">
+            <div class="card-head"><h3>So sánh sản lượng theo quý</h3><span class="hint">Đơn vị: chiếc</span></div>
+            <div class="chart-box"><canvas id="chartQuarter"></canvas></div>
+          </div>
+        </div>
+
+        <div class="subview" id="sub-ytd">
+          <div class="two-col">
+            <div class="card"><div class="card-head"><h3>Lũy kế doanh thu từ đầu năm</h3><span class="hint" id="ytdLabel"></span></div>
+              <div class="chart-box"><canvas id="chartYTD"></canvas></div>
+            </div>
+            <div class="card"><div class="card-head"><h3>YTD theo nhóm sản phẩm</h3></div>
+              <div id="ytdGroupList"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="subview" id="sub-kehoach">
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-head"><h3>Tiến độ thực hiện kế hoạch năm 2026</h3><span class="hint">Toàn công ty</span></div>
+            <div class="chart-box"><canvas id="chartPlanProgress"></canvas></div>
+          </div>
+          <div class="table-wrap">
+            <table><thead><tr>
+              <th>Nhóm sản phẩm</th><th class="num">KH năm (tr đ)</th><th class="num">Thực hiện YTD (tr đ)</th>
+              <th>% hoàn thành</th><th class="num">Dự kiến cả năm (tr đ)</th><th>Khả năng đạt KH</th>
+            </tr></thead><tbody id="planTable"></tbody></table>
+          </div>
+        </div>
+
+        <div class="subview" id="sub-nhom">
+          <div class="grid grid-4" id="groupCardsGrid"></div>
+        </div>
+      </section>
+
+      <!-- ================= 3. DANH MỤC SẢN PHẨM (BCG) ================= -->
+      <section class="view" id="view-danh-muc">
+        <div class="card-head" style="margin-bottom:16px;">
+          <h3 style="font-size:13.5px; color:var(--ink-500); font-weight:600;">Lọc theo kênh</h3>
+          <select id="bcgChannelPicker" style="border:1px solid var(--line-strong); border-radius:9px; padding:7px 12px; font:inherit; background:#fff;">
+            <option value="all">Tất cả kênh</option>
+            <option value="GT">Kênh GT</option>
+            <option value="MT">Kênh MT</option>
+          </select>
+        </div>
+        <div class="grid grid-2" id="bcgQuadrants"></div>
+
+        <div class="section-title"><div><h2>Danh mục sản phẩm đầy đủ</h2><div class="desc">Trạng thái vòng đời &amp; vai trò từng SKU</div></div></div>
+        <div class="table-wrap">
+          <table><thead><tr>
+            <th>Mã hàng</th><th>Nhóm sản phẩm</th><th>Kênh</th><th>Vai trò</th><th>Vòng đời BCG</th><th class="num">Giá NY (đ)</th><th>Ghi chú</th>
+          </tr></thead><tbody id="portfolioTable"></tbody></table>
+        </div>
+      </section>
+
+      <!-- ================= 4. QUẢN TRỊ DỰ ÁN PTSPM ================= -->
+      <section class="view" id="view-ptsp">
+        <div class="grid grid-4" id="ptspKpi"></div>
+
+        <div class="section-title">
+          <div><h2>Danh sách dự án</h2><div class="desc">Bao gồm hàng OEM và tự sản xuất</div></div>
+          <div style="display:flex; gap:8px;">
+            <select id="ptspFilterType" style="border:1px solid var(--line-strong); border-radius:9px; padding:7px 10px; font:inherit; font-size:12.5px; background:#fff;">
+              <option value="all">Tất cả loại hàng</option><option value="OEM">OEM</option><option value="Tự sản xuất">Tự sản xuất</option>
+            </select>
+            <select id="ptspFilterGroup" style="border:1px solid var(--line-strong); border-radius:9px; padding:7px 10px; font:inherit; font-size:12.5px; background:#fff;">
+              <option value="all">Tất cả nhóm hàng</option>
+            </select>
+            <button class="btn primary sm" id="addProjectBtn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+              Thêm dự án
+            </button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr>
+            <th>Dự án</th><th>Nhóm hàng</th><th>Loại</th><th>Giai đoạn</th><th>Tiến độ</th>
+            <th>Dự kiến ra mắt</th><th>PIC</th><th>Trạng thái</th><th></th>
+          </tr></thead><tbody id="ptspTable"></tbody></table>
+        </div>
+      </section>
+
+      <!-- ================= 5. CẢNH BÁO & CÔNG VIỆC ================= -->
+      <section class="view" id="view-canh-bao">
+        <div class="two-col">
+          <div>
+            <div class="section-title" style="margin-top:0;"><div><h2>Cảnh báo hệ thống</h2><div class="desc">Tự động phát hiện từ dữ liệu kinh doanh &amp; dự án</div></div></div>
+            <div id="alertList"></div>
+          </div>
+          <div>
+            <div class="section-title" style="margin-top:0;"><div><h2>Việc cần làm</h2><div class="desc">Ghi chú công tác quản trị sản phẩm</div></div></div>
+            <div class="card">
+              <div style="display:flex; gap:8px; margin-bottom:14px;">
+                <input id="todoInput" placeholder="Thêm việc cần làm..." style="flex:1; border:1px solid var(--line-strong); border-radius:9px; padding:9px 11px; font:inherit; font-size:13px;">
+                <button class="btn primary sm" id="todoAddBtn">Thêm</button>
+              </div>
+              <div id="todoList"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 6. CÀI ĐẶT KẾT NỐI ================= -->
+      <section class="view" id="view-cai-dat">
+        <div class="settings-form">
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-head"><h3>Kết nối Google Sheet qua Apps Script</h3></div>
+            <div class="field" style="margin-bottom:14px;">
+              <label>Web App URL (đã publish từ Google Apps Script)</label>
+              <input id="scriptUrlInput" placeholder="https://script.google.com/macros/s/XXXXX/exec">
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button class="btn primary" id="testConnBtn">Kiểm tra kết nối</button>
+              <button class="btn" id="loadFromSheetBtn">Tải dữ liệu từ Sheet</button>
+            </div>
+            <div style="margin-top:16px;" class="help-box">
+              Mặc định dashboard chạy với <strong>dữ liệu mẫu</strong> để demo giao diện. Để lấy dữ liệu thật:<br>
+              1. Publish Apps Script (<code>Code.gs</code> đi kèm) dạng Web App, quyền <code>Anyone</code>.<br>
+              2. Dán URL <code>/exec</code> vào ô trên, hoặc điền cố định vào hằng số <code>APPS_SCRIPT_URL</code> ở đầu file trước khi đưa lên GitHub Pages.<br>
+              3. URL sẽ được lưu trong phiên làm việc hiện tại (không lưu trình duyệt) — dữ liệu thật luôn lấy từ Google Sheet mỗi khi tải trang hoặc bấm "Đồng bộ".
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:16px;">
+            <div class="card-head"><h3>Phân quyền hiển thị</h3></div>
+            <div class="switch" id="editSwitch2" role="button" tabindex="0" style="margin-bottom:10px;">
+              <span>Cho phép chỉnh sửa số liệu (dành cho PM)</span><span class="switch-track"></span>
+            </div>
+            <div style="font-size:12.5px; color:var(--ink-500);">Tắt chế độ này khi trình chiếu cho lãnh đạo để tránh chỉnh sửa nhầm.</div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Trạng thái đồng bộ</h3></div>
+            <div style="font-size:13px; color:var(--ink-700); display:flex; flex-direction:column; gap:6px;">
+              <div>Nguồn dữ liệu: <strong id="statusSource">Dữ liệu mẫu (demo)</strong></div>
+              <div>Lần đồng bộ gần nhất: <strong id="statusTime">—</strong></div>
+              <div>Số bản ghi đã tải: <strong id="statusCount" class="num">—</strong></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+    <div class="footer-note">
+      <span>Livotec · Product Management Dashboard — nội bộ</span>
+      <span id="footYear"></span>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Modal thêm/sửa dự án PTSPM -->
+<div class="overlay" id="projectModalOverlay">
+  <div class="modal">
+    <div class="modal-head"><h3 id="projectModalTitle">Thêm dự án PTSPM</h3><button class="close-x" id="projectModalClose">✕</button></div>
+    <div class="modal-body">
+      <div class="field"><label>Tên dự án</label><input id="pf-name" placeholder="VD: Quạt đứng BLDC SB-618"></div>
+      <div class="field-row">
+        <div class="field"><label>Nhóm hàng</label><select id="pf-group"></select></div>
+        <div class="field"><label>Loại hàng</label><select id="pf-type"><option>Tự sản xuất</option><option>OEM</option></select></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Giai đoạn</label>
+          <select id="pf-stage">
+            <option>Ý tưởng</option><option>Thiết kế / Sourcing</option><option>Làm mẫu</option>
+            <option>Kiểm thử</option><option>Sản xuất loạt đầu</option><option>Ra mắt thị trường</option>
+          </select>
+        </div>
+        <div class="field"><label>Tiến độ (%)</label><input id="pf-progress" type="number" min="0" max="100" value="10"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Dự kiến ra mắt</label><input id="pf-launch" type="month"></div>
+        <div class="field"><label>PIC phụ trách</label><input id="pf-pic" placeholder="Tên PM/PIC"></div>
+      </div>
+      <div class="field"><label>Trạng thái</label>
+        <select id="pf-status"><option>Đúng tiến độ</option><option>Rủi ro</option><option>Chậm tiến độ</option><option>Hoàn thành</option></select>
+      </div>
+      <div class="field"><label>Ghi chú</label><textarea id="pf-note" rows="2" placeholder="Ghi chú thêm..."></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="projectDeleteBtn" style="color:var(--kill); display:none;">Xóa dự án</button>
+      <button class="btn" id="projectCancelBtn">Hủy</button>
+      <button class="btn primary" id="projectSaveBtn">Lưu &amp; ghi vào Sheet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   LIVOTEC PRODUCT MANAGEMENT DASHBOARD
+   - Chạy độc lập với dữ liệu mẫu (demo).
+   - Khi có APPS_SCRIPT_URL hợp lệ, dữ liệu được tải/ghi qua Google Apps Script
+     Web App (xem file Code.gs đi kèm) — đóng vai trò API đọc/ghi Google Sheet.
+   ========================================================================= */
+
+// Điền cố định URL Apps Script tại đây trước khi publish lên GitHub Pages
+// (hoặc để trống và nhập tại màn hình "Cài đặt kết nối").
+const APPS_SCRIPT_URL_DEFAULT = "";
+
+/* ---------------------------- ICONS (inline svg) ---------------------------- */
+const ICONS = {
+  overview:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
+  sales:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>',
+  portfolio:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>',
+  project:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>',
+  alert:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>',
+  settings:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>',
+  box:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8L12 3 3 8l9 5 9-5Z"/><path d="M3 8v9l9 5 9-5V8"/><path d="M12 13v9"/></svg>',
+  trend:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>',
+  trendDown:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 7l6 6 4-4 8 8"/><path d="M15 17h6v-6"/></svg>',
+};
+
+/* ---------------------------- PRODUCT GROUPS ---------------------------- */
+const GROUPS = [
+  {key:'quat',   name:'Quạt điện',        emoji:'🌀', color:'#12977A', avgPrice:0.85, seasonal:'summer'},
+  {key:'beptu',  name:'Bếp từ',           emoji:'🍳', color:'#3E76D6', avgPrice:3.1,  seasonal:'flat'},
+  {key:'noicom', name:'Nồi cơm điện',     emoji:'🍚', color:'#DE9A2E', avgPrice:0.62, seasonal:'flat'},
+  {key:'binhnn', name:'Bình nước nóng',   emoji:'🚿', color:'#D65B5B', avgPrice:2.45, seasonal:'winter'},
+  {key:'suoi',   name:'Máy sưởi',         emoji:'🔥', color:'#A85CDB', avgPrice:0.95, seasonal:'winter'},
+  {key:'hutam',  name:'Máy hút ẩm',       emoji:'💧', color:'#1FB0C9', avgPrice:4.2,  seasonal:'summer'},
+  {key:'hutmui', name:'Máy hút mùi',      emoji:'🍽️', color:'#7A8F3C', avgPrice:3.6,  seasonal:'flat'},
+  {key:'hutbui', name:'Máy hút bụi',      emoji:'🧹', color:'#C77B3E', avgPrice:1.55, seasonal:'flat'},
+];
+const MONTH_NAMES = ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'];
+const CURRENT_MONTH = 7; // Tháng 7/2026 - dữ liệu YTD tính đủ đến hết T6, T7 đang chạy
+
+/* ---------------------------- SEEDED RANDOM (mock data) ---------------------------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+function seasonalFactor(type, month){
+  // month 1-12
+  if(type==='summer'){ const peak=[0.7,0.75,0.9,1.15,1.35,1.5,1.55,1.4,1.1,0.85,0.7,0.65]; return peak[month-1]; }
+  if(type==='winter'){ const peak=[1.5,1.3,0.95,0.7,0.6,0.55,0.5,0.55,0.65,0.9,1.25,1.55]; return peak[month-1]; }
+  return 1.0 + Math.sin(month/12*Math.PI*2)*0.06;
+}
+
+function generateMockData(){
+  const rnd = mulberry32(20260715);
+  const groupsData = {};
+  GROUPS.forEach((g,gi)=>{
+    const baseUnits = 900 + gi*140; // đơn vị/tháng cơ sở
+    const months = [];
+    for(let m=1;m<=12;m++){
+      const seasonal = seasonalFactor(g.seasonal, m);
+      const target = Math.round(baseUnits * seasonal * (0.95+rnd()*0.1));
+      let actual;
+      if(m < CURRENT_MONTH){
+        actual = Math.round(target * (0.82 + rnd()*0.32));
+      } else if(m === CURRENT_MONTH){
+        actual = Math.round(target * (0.35 + rnd()*0.25)); // tháng đang chạy, mới đạt 1 phần
+      } else {
+        actual = null; // chưa tới
+      }
+      const revenue = actual!=null ? Math.round(actual * g.avgPrice) : null; // triệu đồng
+      const targetRevenue = Math.round(target * g.avgPrice);
+      const invTarget = Math.round(baseUnits * 1.6);
+      const invActual = actual!=null ? Math.round(invTarget * (0.55 + rnd()*0.85)) : invTarget;
+      months.push({month:m, target, actual, revenue, targetRevenue, invTarget, invActual});
+    }
+    groupsData[g.key] = {months};
+  });
+  return groupsData;
+}
+
+const PORTFOLIO = [
+  {sku:'SB-614', group:'quat', channel:'GT', role:'Family comfort / phòng ngủ', stage:'star', price:1690000, note:'BLDC, 7 cánh, 12 mức gió, Sleepy'},
+  {sku:'SB-616', group:'quat', channel:'GT', role:'Hero / sản lượng / phòng rộng', stage:'grow', price:2190000, note:'BLDC 16 inch, mát mạnh'},
+  {sku:'WB-614', group:'quat', channel:'GT', role:'Treo tường / nhà nhỏ', stage:'grow', price:1390000, note:'Space-saving, BLDC'},
+  {sku:'S-300',  group:'quat', channel:'MT', role:'Chào mới / phòng rộng', stage:'grow', price:1490000, note:'AC, remote, hẹn giờ'},
+  {sku:'S-420',  group:'quat', channel:'MT', role:'Phân khúc cao cấp', stage:'grow', price:2585000, note:'Kiểu dáng sang, đẹp'},
+  {sku:'W-150',  group:'quat', channel:'MT', role:'Treo tường phổ thông', stage:'grow', price:1250000, note:'Nút vặn + dây kéo'},
+  {sku:'W-450',  group:'quat', channel:'MT', role:'Treo tường có remote', stage:'grow', price:1450000, note:'Remote + hẹn giờ'},
+  {sku:'S-150B', group:'quat', channel:'GT', role:'Thay thế S-100', stage:'grow', price:0, note:'Động cơ đồng 100%'},
+  {sku:'S-350',  group:'quat', channel:'GT', role:'Thay thế S-200', stage:'grow', price:0, note:'Màn hình LED cảm ứng'},
+  {sku:'S-200',  group:'quat', channel:'GT', role:'Khuyến mãi tặng kèm', stage:'milk', price:0, note:'Tặng kèm máy lọc nước'},
+  {sku:'S-100',  group:'quat', channel:'GT', role:'Khuyến mãi tặng kèm', stage:'milk', price:0, note:'Tặng kèm máy lọc nước'},
+  {sku:'FT-16/18', group:'quat', channel:'GT', role:'Quạt sàn phổ thông', stage:'kill', price:0, note:'Ngừng đầu tư truyền thông'},
+  {sku:'BT-P200', group:'beptu', channel:'MT', role:'Hero bếp đôi cảm ứng', stage:'star', price:2890000, note:'2 vùng nấu, cảm ứng'},
+  {sku:'BT-P100', group:'beptu', channel:'GT', role:'Phổ thông sản lượng', stage:'grow', price:1290000, note:'1 vùng nấu, phím bấm'},
+  {sku:'NC-1L8',  group:'noicom', channel:'GT', role:'Volume driver', stage:'grow', price:590000, note:'1.8L, nắp gài'},
+  {sku:'NC-CAO', group:'noicom', channel:'MT', role:'Cao tần, phân khúc trên', stage:'star', price:1690000, note:'Cao tần, lòng nồi 3D'},
+  {sku:'BNN-20L', group:'binhnn', channel:'MT', role:'Trực tiếp, gia đình nhỏ', stage:'grow', price:2390000, note:'20L, chống giật'},
+  {sku:'BNN-30L', group:'binhnn', channel:'MT', role:'Hero mùa lạnh', stage:'star', price:3190000, note:'30L, hiển thị nhiệt độ'},
+  {sku:'SUOI-G2', group:'suoi', channel:'GT', role:'Sưởi gốm 2 chế độ', stage:'grow', price:790000, note:'An toàn cho trẻ nhỏ'},
+  {sku:'HA-12L', group:'hutam', channel:'MT', role:'Hero hút ẩm gia đình', stage:'star', price:4590000, note:'12L/ngày, cảm biến ẩm'},
+  {sku:'HM-70', group:'hutmui', channel:'MT', role:'Áp trần, phổ thông', stage:'grow', price:2990000, note:'Lọc than hoạt tính'},
+  {sku:'HB-CB2', group:'hutbui', channel:'GT', role:'Không dây, cầm tay', stage:'grow', price:1590000, note:'Pin lithium, nhẹ'},
+];
+
+const PROJECTS = [
+  {id:1, name:'Quạt đứng BLDC SB-618 (kế nhiệm SB-616)', group:'quat', type:'Tự sản xuất', stage:'Làm mẫu', progress:55, launch:'2026-09', pic:'Nguyễn A. Tùng', status:'Đúng tiến độ', note:'Chờ mẫu cánh 16 inch phiên bản 2'},
+  {id:2, name:'Quạt treo tường WB-620 mini', group:'quat', type:'OEM', stage:'Thiết kế / Sourcing', progress:30, launch:'2026-11', pic:'Lê Thu Hà', status:'Đúng tiến độ', note:'Đối tác OEM Quảng Đông'},
+  {id:3, name:'Bếp từ đôi BT-P210 cảm ứng vân đá', group:'beptu', type:'OEM', stage:'Kiểm thử', progress:72, launch:'2026-08', pic:'Trần Minh Khoa', status:'Rủi ro', note:'Chậm linh kiện cảm ứng 2 tuần'},
+  {id:4, name:'Nồi cơm cao tần NC-CAO2 dung tích lớn', group:'noicom', type:'Tự sản xuất', stage:'Sản xuất loạt đầu', progress:88, launch:'2026-08', pic:'Phạm Đức Anh', status:'Đúng tiến độ', note:''},
+  {id:5, name:'Bình nước nóng BNN-30L bản inverter', group:'binhnn', type:'OEM', stage:'Ý tưởng', progress:8, launch:'2027-02', pic:'Ngô Bảo Trâm', status:'Đúng tiến độ', note:'Đang xin báo giá 3 nhà máy'},
+  {id:6, name:'Máy sưởi gốm SUOI-G3 remote', group:'suoi', type:'Tự sản xuất', stage:'Kiểm thử', progress:64, launch:'2026-10', pic:'Nguyễn A. Tùng', status:'Đúng tiến độ', note:''},
+  {id:7, name:'Máy hút ẩm HA-16L công suất lớn', group:'hutam', type:'OEM', stage:'Sản xuất loạt đầu', progress:91, launch:'2026-08', pic:'Lê Thu Hà', status:'Đúng tiến độ', note:'Sắp ra mắt đúng mùa nồm miền Bắc'},
+  {id:8, name:'Máy hút mùi âm tủ HM-90', group:'hutmui', type:'OEM', stage:'Thiết kế / Sourcing', progress:22, launch:'2027-01', pic:'Trần Minh Khoa', status:'Chậm tiến độ', note:'Đối tác chưa chốt khuôn mẫu'},
+  {id:9, name:'Máy hút bụi lau nhà HB-CB3', group:'hutbui', type:'Tự sản xuất', stage:'Làm mẫu', progress:40, launch:'2026-12', pic:'Phạm Đức Anh', status:'Đúng tiến độ', note:''},
+  {id:10, name:'Quạt cây BLDC SB-614 Pro (nâng cấp remote màn hình)', group:'quat', type:'Tự sản xuất', stage:'Ý tưởng', progress:12, launch:'2027-03', pic:'Ngô Bảo Trâm', status:'Đúng tiến độ', note:''},
+  {id:11, name:'Bếp từ đơn du lịch mini BT-P50', group:'beptu', type:'OEM', stage:'Ra mắt thị trường', progress:100, launch:'2026-06', pic:'Lê Thu Hà', status:'Hoàn thành', note:'Đã sell-in GT tháng 6'},
+  {id:12, name:'Nồi chiên không dầu NCKD-45 (mở rộng ngành hàng mới)', group:'noicom', type:'OEM', stage:'Thiết kế / Sourcing', progress:18, launch:'2027-01', pic:'Trần Minh Khoa', status:'Rủi ro', note:'Đang đánh giá 2 nhà máy OEM'},
+  {id:13, name:'Bình nước nóng BNN-15L phòng trọ', group:'binhnn', type:'Tự sản xuất', stage:'Kiểm thử', progress:58, launch:'2026-10', pic:'Nguyễn A. Tùng', status:'Đúng tiến độ', note:''},
+  {id:14, name:'Máy hút ẩm mini để bàn HA-3L', group:'hutam', type:'OEM', stage:'Ý tưởng', progress:5, launch:'2027-04', pic:'Phạm Đức Anh', status:'Đúng tiến độ', note:'Nghiên cứu xu hướng phòng nhỏ'},
+];
+
+/* ---------------------------- STATE ---------------------------- */
+const STATE = {
+  view:'tong-quan',
+  editMode:false,
+  scriptUrl: APPS_SCRIPT_URL_DEFAULT,
+  connected:false,
+  lastSync:null,
+  data: generateMockData(),
+  portfolio: JSON.parse(JSON.stringify(PORTFOLIO)),
+  projects: JSON.parse(JSON.stringify(PROJECTS)),
+  todos:[
+    {id:1, text:'Chốt giá NY quạt BLDC SB-618 trước tuần sau', done:false},
+    {id:2, text:'Review sell-out GT tháng 6 với sales', done:true},
+    {id:3, text:'Duyệt bao bì mới cho Bình nước nóng BNN-30L', done:false},
+  ],
+  charts:{},
+};
+
+const fmt = n => n==null ? '—' : new Intl.NumberFormat('vi-VN').format(Math.round(n));
+const fmt1 = n => n==null ? '—' : new Intl.NumberFormat('vi-VN',{maximumFractionDigits:1}).format(n);
+const groupByKey = k => GROUPS.find(g=>g.key===k);
+
+/* ============================= NAV ============================= */
+const NAV_ITEMS = [
+  {key:'tong-quan', label:'Tổng quan', icon:ICONS.overview},
+  {key:'kd-ton-kho', label:'Kinh doanh &amp; tồn kho', icon:ICONS.sales},
+  {key:'danh-muc', label:'Danh mục sản phẩm', icon:ICONS.portfolio},
+  {key:'ptsp', label:'Dự án PTSPM', icon:ICONS.project},
+  {key:'canh-bao', label:'Cảnh báo &amp; công việc', icon:ICONS.alert, badgeKey:'alerts'},
+  {key:'cai-dat', label:'Cài đặt kết nối', icon:ICONS.settings},
+];
+const PAGE_TITLES = {
+  'tong-quan':'Tổng quan', 'kd-ton-kho':'Kinh doanh &amp; tồn kho', 'danh-muc':'Danh mục sản phẩm (BCG)',
+  'ptsp':'Quản trị dự án PTSPM', 'canh-bao':'Cảnh báo &amp; công việc', 'cai-dat':'Cài đặt kết nối dữ liệu'
+};
+
+function renderNav(){
+  const el = document.getElementById('navList');
+  el.innerHTML = `<div class="nav-label">Điều hướng</div>` + NAV_ITEMS.map(it=>{
+    const alerts = it.badgeKey==='alerts' ? computeAlerts().length : 0;
+    return `<button class="nav-item ${STATE.view===it.key?'active':''} ${alerts?'alert':''}" data-view="${it.key}">
+      ${it.icon}<span>${it.label}</span>${alerts?`<span class="badge">${alerts}</span>`:''}
+    </button>`;
+  }).join('');
+  el.querySelectorAll('.nav-item').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
+}
+
+function switchView(key){
+  STATE.view = key;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+key).classList.add('active');
+  document.getElementById('pageTitle').innerHTML = PAGE_TITLES[key];
+  renderNav();
+  if(window.innerWidth<=900) document.getElementById('sidebar').classList.remove('open');
+}
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.goto)));
+
+/* ============================= DERIVED METRICS ============================= */
+function groupYTD(gkey){
+  const months = STATE.data[gkey].months;
+  let rev=0, target=0, units=0, unitsTarget=0;
+  months.forEach(m=>{ if(m.month<CURRENT_MONTH){ rev+=m.revenue||0; target+=m.targetRevenue||0; units+=m.actual||0; unitsTarget+=m.target||0; } });
+  return {rev, target, units, unitsTarget};
+}
+function groupAnnual(gkey){
+  const months = STATE.data[gkey].months;
+  const annualTarget = months.reduce((s,m)=>s+m.targetRevenue,0);
+  const ytd = groupYTD(gkey);
+  const monthsLeft = 12-CURRENT_MONTH+1;
+  const runRate = ytd.rev/(CURRENT_MONTH-1||1);
+  const projected = ytd.rev + runRate*monthsLeft;
+  return {annualTarget, ytdRev:ytd.rev, projected, pct: annualTarget? (ytd.rev/annualTarget*100):0, projPct: annualTarget? (projected/annualTarget*100):0};
+}
+function currentInventory(gkey){
+  const months = STATE.data[gkey].months;
+  const m = months.find(mm=>mm.month===CURRENT_MONTH) || months[CURRENT_MONTH-1];
+  return {actual:m.invActual, target:m.invTarget};
+}
+function invHealth(actual, target){
+  const ratio = actual/target;
+  if(ratio>1.3) return {label:'Tồn cao', cls:'kill'};
+  if(ratio<0.6) return {label:'Tồn thấp', cls:'milk'};
+  return {label:'Ổn định', cls:'star'};
+}
+const STAGE_CLS = {grow:'grow', star:'star', milk:'milk', kill:'kill'};
+const STAGE_LABEL = {grow:'Đầu tư mạnh', star:'Turn into Star', milk:'Maintain & Milk', kill:'Killed'};
+
+function computeAlerts(){
+  const alerts = [];
+  GROUPS.forEach(g=>{
+    const inv = currentInventory(g.key);
+    const h = invHealth(inv.actual, inv.target);
+    if(h.cls==='kill') alerts.push({sev:'high', title:`Tồn kho ${g.name} vượt ngưỡng`, desc:`Tồn hiện tại ${fmt(inv.actual)} chiếc, vượt ${Math.round((inv.actual/inv.target-1)*100)}% so với mục tiêu.`});
+    if(h.cls==='milk') alerts.push({sev:'mid', title:`Tồn kho ${g.name} thấp`, desc:`Tồn hiện tại ${fmt(inv.actual)} chiếc, chỉ đạt ${Math.round(inv.actual/inv.target*100)}% mục tiêu — rủi ro thiếu hàng.`});
+    const an = groupAnnual(g.key);
+    if(an.projPct<90) alerts.push({sev:'high', title:`${g.name} dự kiến không đạt KH năm`, desc:`Dự phóng cả năm đạt ${Math.round(an.projPct)}% kế hoạch (${fmt(an.projected)} tr đ / ${fmt(an.annualTarget)} tr đ).`});
+  });
+  STATE.projects.forEach(p=>{
+    if(p.status==='Chậm tiến độ') alerts.push({sev:'high', title:`Dự án chậm tiến độ: ${p.name}`, desc:`PIC: ${p.pic} · Giai đoạn: ${p.stage} · Dự kiến ra mắt ${p.launch}`});
+    if(p.status==='Rủi ro') alerts.push({sev:'mid', title:`Dự án có rủi ro: ${p.name}`, desc:p.note || `PIC: ${p.pic} · Giai đoạn: ${p.stage}`});
+  });
+  return alerts;
+}
+
+/* ============================= TOAST ============================= */
+function toast(msg, type=''){
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast'+(type?' '+type:'');
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(()=>t.remove(),300); }, 2800);
+}
+
+/* ============================= CONNECTION / SYNC ============================= */
+function refreshConnectionUI(){
+  const dot = document.getElementById('sideDot');
+  const sideText = document.getElementById('sideConnText');
+  const syncText = document.getElementById('sideSyncText');
+  const pill = document.getElementById('connPill');
+  if(STATE.scriptUrl && STATE.connected){
+    dot.className='dot on'; sideText.textContent='Đã kết nối Google Sheet';
+    pill.className='pill ok'; pill.textContent='● Dữ liệu trực tiếp từ Sheet';
+  } else if(STATE.scriptUrl && !STATE.connected){
+    dot.className='dot mock'; sideText.textContent='Chưa xác minh kết nối';
+    pill.className='pill mock'; pill.textContent='● Chưa xác minh kết nối';
+  } else {
+    dot.className='dot mock'; sideText.textContent='Chưa kết nối Google Sheet';
+    pill.className='pill mock'; pill.textContent='● Chế độ xem mẫu';
+  }
+  syncText.textContent = STATE.lastSync ? ('Đồng bộ lúc '+STATE.lastSync) : 'Dữ liệu mẫu (demo)';
+  document.getElementById('statusSource').textContent = STATE.connected ? 'Google Sheet (qua Apps Script)' : 'Dữ liệu mẫu (demo)';
+  document.getElementById('statusTime').textContent = STATE.lastSync || '—';
+  document.getElementById('statusCount').textContent = STATE.connected ? fmt(STATE.projects.length + STATE.portfolio.length) : '—';
+}
+
+async function callAppsScript(action, payload){
+  if(!STATE.scriptUrl){ toast('Chưa cấu hình URL Apps Script — xem mục Cài đặt kết nối', 'warn'); return null; }
+  try{
+    const res = await fetch(STATE.scriptUrl, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({action, payload})
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    return await res.json();
+  }catch(err){
+    toast('Không thể kết nối Google Sheet: '+err.message, 'warn');
+    return null;
+  }
+}
+
+async function testConnection(){
+  const url = document.getElementById('scriptUrlInput').value.trim();
+  STATE.scriptUrl = url;
+  if(!url){ toast('Vui lòng nhập Web App URL', 'warn'); refreshConnectionUI(); return; }
+  const res = await callAppsScript('ping', {});
+  STATE.connected = !!(res && res.ok);
+  if(STATE.connected) toast('Kết nối Google Sheet thành công', 'ok');
+  refreshConnectionUI();
+}
+
+async function loadFromSheet(){
+  if(!STATE.scriptUrl){ toast('Vui lòng nhập và kiểm tra kết nối trước', 'warn'); return; }
+  const res = await callAppsScript('getAll', {});
+  if(res && res.ok && res.data){
+    if(res.data.monthly) STATE.data = res.data.monthly;
+    if(res.data.portfolio) STATE.portfolio = res.data.portfolio;
+    if(res.data.projects) STATE.projects = res.data.projects;
+    STATE.connected = true;
+    STATE.lastSync = new Date().toLocaleString('vi-VN');
+    toast('Đã tải dữ liệu mới nhất từ Google Sheet', 'ok');
+    renderAll();
+  }
+  refreshConnectionUI();
+}
+
+async function pushUpdate(sheetName, row){
+  if(!STATE.scriptUrl){
+    toast('Đang ở chế độ xem mẫu — thay đổi chỉ lưu tạm trong phiên này', 'warn');
+    return;
+  }
+  const res = await callAppsScript('updateRow', {sheet:sheetName, row});
+  if(res && res.ok) toast('Đã lưu vào Google Sheet', 'ok');
+}
+
+/* ============================= RENDER: TỔNG QUAN ============================= */
+function renderOverview(){
+  // KPI row
+  let totalYTD=0, totalTarget=0, totalAnnualTarget=0, totalProjected=0;
+  GROUPS.forEach(g=>{ const y=groupYTD(g.key); const a=groupAnnual(g.key); totalYTD+=y.rev; totalTarget+=y.target; totalAnnualTarget+=a.annualTarget; totalProjected+=a.projected; });
+  const pctYTD = totalTarget? (totalYTD/totalTarget*100):0;
+  const alerts = computeAlerts();
+  const projActive = STATE.projects.filter(p=>p.status!=='Hoàn thành').length;
+
+  const kpis = [
+    {label:'Doanh thu YTD toàn công ty', value:fmt(totalYTD)+' tr đ', delta:(pctYTD>=100?'up':'down'), deltaText:Math.round(pctYTD)+'% so với KH lũy kế', icon:ICONS.sales, color:'var(--mint-600)'},
+    {label:'Dự phóng cả năm', value:fmt(totalProjected)+' tr đ', delta:(totalProjected>=totalAnnualTarget?'up':'down'), deltaText:Math.round(totalProjected/totalAnnualTarget*100)+'% KH năm', icon:ICONS.overview, color:'var(--blue)'},
+    {label:'Dự án PTSPM đang triển khai', value:projActive, delta:'up', deltaText:STATE.projects.length+' dự án tổng', icon:ICONS.project, color:'var(--amber)'},
+    {label:'Cảnh báo cần xử lý', value:alerts.length, delta: alerts.length>3?'down':'up', deltaText: alerts.filter(a=>a.sev==='high').length+' mức ưu tiên cao', icon:ICONS.alert, color:'var(--red)'},
+  ];
+  document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
+    <div class="card kpi-card">
+      <div class="icon-badge" style="background:${k.color}1A; color:${k.color};">${k.icon}</div>
+      <div class="label">${k.label}</div>
+      <div class="value">${k.value}</div>
+      <div class="delta ${k.delta}">${k.delta==='up'?ICONS.trend:ICONS.trendDown} ${k.deltaText}</div>
+    </div>`).join('');
+
+  // group table
+  document.getElementById('overviewGroupTable').innerHTML = GROUPS.map(g=>{
+    const y = groupYTD(g.key); const a = groupAnnual(g.key); const inv = currentInventory(g.key); const h = invHealth(inv.actual, inv.target);
+    const bcgStages = STATE.portfolio.filter(p=>p.group===g.key).map(p=>p.stage);
+    const dominant = bcgStages.length ? bcgStages.sort((x,y2)=>bcgStages.filter(v=>v===x).length - bcgStages.filter(v=>v===y2).length).pop() : 'grow';
+    return `<tr>
+      <td><span class="group-icon" style="background:${g.color}1A;">${g.emoji}</span> <strong>${g.name}</strong></td>
+      <td class="num">${fmt(y.rev)}</td>
+      <td class="num">${fmt(a.annualTarget)}</td>
+      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(a.pct,100)}%; background:${g.color};"></div></div><span class="num" style="font-size:12px;">${Math.round(a.pct)}%</span></div></td>
+      <td class="num">${fmt(inv.actual)}</td>
+      <td><span class="tag ${h.cls}">${h.label}</span></td>
+      <td><span class="tag ${STAGE_CLS[dominant]}">${STAGE_LABEL[dominant]}</span></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('overviewAlerts').innerHTML = alerts.slice(0,3).map(alertHtml).join('') || `<div class="empty">Không có cảnh báo nào 🎉</div>`;
+
+  renderChartOverviewRevenue();
+  renderChartOverviewShare();
+}
+
+function alertHtml(a){
+  const sevCls = a.sev==='high'?'sev-high':(a.sev==='mid'?'sev-mid':'sev-low');
+  return `<div class="alert-item ${sevCls}"><div class="ic">${ICONS.alert}</div><div class="body"><div class="title">${a.title}</div><div class="desc">${a.desc}</div></div></div>`;
+}
+
+function renderChartOverviewRevenue(){
+  const ctx = document.getElementById('chartOverviewRevenue');
+  const labels = MONTH_NAMES;
+  const actualSeries = labels.map((_,i)=>{ let s=0; GROUPS.forEach(g=>{ const m=STATE.data[g.key].months[i]; s+=m.revenue||0; }); return s||null; });
+  const targetSeries = labels.map((_,i)=>{ let s=0; GROUPS.forEach(g=>{ const m=STATE.data[g.key].months[i]; s+=m.targetRevenue||0; }); return s; });
+  if(STATE.charts.overviewRevenue) STATE.charts.overviewRevenue.destroy();
+  STATE.charts.overviewRevenue = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[
+      {type:'line', label:'Kế hoạch', data:targetSeries, borderColor:'#DE9A2E', backgroundColor:'#DE9A2E', tension:.35, pointRadius:2, borderDash:[5,3]},
+      {label:'Thực tế', data:actualSeries, backgroundColor:'#12977A', borderRadius:5, maxBarThickness:26},
+    ]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom', labels:{boxWidth:10, font:{size:11}}}}, scales:{y:{grid:{color:'#EEF3F1'}}, x:{grid:{display:false}}}}
+  });
+}
+function renderChartOverviewShare(){
+  const ctx = document.getElementById('chartOverviewShare');
+  const data = GROUPS.map(g=>groupYTD(g.key).rev);
+  if(STATE.charts.overviewShare) STATE.charts.overviewShare.destroy();
+  STATE.charts.overviewShare = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels:GROUPS.map(g=>g.name), datasets:[{data, backgroundColor:GROUPS.map(g=>g.color), borderWidth:2, borderColor:'#fff'}] },
+    options:{responsive:true, maintainAspectRatio:false, cutout:'62%', plugins:{legend:{position:'right', labels:{boxWidth:10, font:{size:10.5}, padding:8}}}}
+  });
+}
+
+/* ============================= RENDER: KINH DOANH & TỒN KHO ============================= */
+function renderMonthPicker(){
+  const sel = document.getElementById('monthPicker');
+  if(sel.options.length===0){
+    sel.innerHTML = MONTH_NAMES.map((m,i)=>`<option value="${i+1}">Tháng ${i+1}/2026</option>`).join('');
+    sel.value = CURRENT_MONTH;
+    sel.addEventListener('change', renderMonthView);
+  }
+}
+function renderMonthView(){
+  const month = parseInt(document.getElementById('monthPicker').value,10);
+  let planUnits=0, actualUnits=0, revenue=0, planRevenue=0;
+  GROUPS.forEach(g=>{ const m=STATE.data[g.key].months[month-1]; planUnits+=m.target; actualUnits+=m.actual||0; revenue+=m.revenue||0; planRevenue+=m.targetRevenue; });
+  const pct = planUnits? (actualUnits/planUnits*100):0;
+  document.getElementById('monthKpi').innerHTML = `
+    <div class="card kpi-card"><div class="label">Sản lượng kế hoạch</div><div class="value">${fmt(planUnits)}</div></div>
+    <div class="card kpi-card"><div class="label">Sản lượng thực tế</div><div class="value">${fmt(actualUnits)}</div><div class="delta ${pct>=100?'up':'down'}">${Math.round(pct)}% kế hoạch</div></div>
+    <div class="card kpi-card"><div class="label">Doanh thu tháng (tr đ)</div><div class="value">${fmt(revenue)}</div><div class="delta ${revenue>=planRevenue?'up':'down'}">KH ${fmt(planRevenue)} tr đ</div></div>
+  `;
+  const tbody = document.querySelector('#tableThang tbody');
+  tbody.innerHTML = GROUPS.map(g=>{
+    const m = STATE.data[g.key].months[month-1];
+    const p = m.target? (m.actual||0)/m.target*100 : 0;
+    return `<tr data-group="${g.key}">
+      <td><span class="group-icon" style="background:${g.color}1A;">${g.emoji}</span> ${g.name}</td>
+      <td class="num">${fmt(m.target)}</td>
+      <td class="num editable-cell"><input type="number" data-field="actual" value="${m.actual==null?'':m.actual}" ${STATE.editMode?'':'disabled'}></td>
+      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(p,100)}%; background:${g.color};"></div></div><span class="num" style="font-size:12px;">${Math.round(p)}%</span></div></td>
+      <td class="num">${fmt(m.revenue)}</td>
+      <td class="num editable-cell"><input type="number" data-field="invActual" value="${m.invActual}" ${STATE.editMode?'':'disabled'}></td>
+      <td class="num">${fmt(m.invTarget)}</td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('change', ()=>{
+      const gkey = inp.closest('tr').dataset.group;
+      const field = inp.dataset.field;
+      const val = parseFloat(inp.value)||0;
+      const m = STATE.data[gkey].months[month-1];
+      m[field] = val;
+      if(field==='actual') m.revenue = Math.round(val * groupByKey(gkey).avgPrice);
+      renderMonthView(); renderOverview(); renderNav();
+      pushUpdate('KinhDoanh', {group:gkey, month, field, value:val});
+    });
+  });
+  document.querySelector('.table-wrap table')?.classList.toggle('edit-mode', STATE.editMode);
+  document.getElementById('tableThang').closest('.card').classList.toggle('edit-mode', STATE.editMode);
+}
+
+function renderQuarterView(){
+  const quarters = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]];
+  const qData = quarters.map(qm=>{
+    let units=0, target=0, rev=0;
+    GROUPS.forEach(g=>{ qm.forEach(mm=>{ const m=STATE.data[g.key].months[mm-1]; units+=m.actual||0; target+=m.target; rev+=m.revenue||0; }); });
+    return {units, target, rev};
+  });
+  document.getElementById('quarterKpi').innerHTML = qData.map((q,i)=>`
+    <div class="card kpi-card"><div class="label">Quý ${i+1}/2026</div><div class="value">${fmt(q.rev)} <span style="font-size:12px; color:var(--ink-500);">tr đ</span></div>
+    <div class="delta ${q.units>=q.target?'up':'down'}">${q.target? Math.round(q.units/q.target*100):0}% sản lượng KH</div></div>`).join('');
+  const ctx = document.getElementById('chartQuarter');
+  if(STATE.charts.quarter) STATE.charts.quarter.destroy();
+  STATE.charts.quarter = new Chart(ctx,{ type:'bar', data:{ labels:['Q1','Q2','Q3','Q4'], datasets:[
+    {label:'Kế hoạch (chiếc)', data:qData.map(q=>q.target), backgroundColor:'#DEEBE5', borderRadius:6},
+    {label:'Thực tế (chiếc)', data:qData.map(q=>q.units), backgroundColor:'#12977A', borderRadius:6},
+  ]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y:{grid:{color:'#EEF3F1'}}, x:{grid:{display:false}}}}});
+}
+
+function renderYTDView(){
+  document.getElementById('ytdLabel').textContent = `Đến hết tháng ${CURRENT_MONTH-1}/2026`;
+  const labels = MONTH_NAMES.slice(0,CURRENT_MONTH-1);
+  let cum=0; const cumSeries = labels.map((_,i)=>{ let s=0; GROUPS.forEach(g=>{ s+=STATE.data[g.key].months[i].revenue||0; }); cum+=s; return cum; });
+  const ctx = document.getElementById('chartYTD');
+  if(STATE.charts.ytd) STATE.charts.ytd.destroy();
+  STATE.charts.ytd = new Chart(ctx,{type:'line', data:{labels, datasets:[{label:'Lũy kế doanh thu (tr đ)', data:cumSeries, borderColor:'#12977A', backgroundColor:'rgba(18,151,122,.12)', fill:true, tension:.35, pointRadius:3}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{grid:{color:'#EEF3F1'}}, x:{grid:{display:false}}}}});
+  document.getElementById('ytdGroupList').innerHTML = GROUPS.map(g=>{
+    const y = groupYTD(g.key); const pct = y.target? y.rev/y.target*100:0;
+    return `<div style="display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line);">
+      <span class="group-icon" style="background:${g.color}1A;">${g.emoji}</span>
+      <div style="flex:1;"><div style="font-size:13px; font-weight:600;">${g.name}</div>
+      <div class="bar-track" style="margin-top:5px;"><div class="bar-fill" style="width:${Math.min(pct,100)}%; background:${g.color};"></div></div></div>
+      <div class="num" style="font-size:12.5px; font-weight:700;">${fmt(y.rev)} tr</div>
+    </div>`;
+  }).join('');
+}
+
+function renderPlanView(){
+  const labels = GROUPS.map(g=>g.name);
+  const pctData = GROUPS.map(g=>groupAnnual(g.key).pct);
+  const projData = GROUPS.map(g=>groupAnnual(g.key).projPct);
+  const ctx = document.getElementById('chartPlanProgress');
+  if(STATE.charts.plan) STATE.charts.plan.destroy();
+  STATE.charts.plan = new Chart(ctx,{type:'bar', data:{labels, datasets:[
+    {label:'% hoàn thành YTD', data:pctData, backgroundColor:'#12977A', borderRadius:5},
+    {label:'% dự phóng cả năm', data:projData, backgroundColor:'#3E76D6', borderRadius:5},
+  ]}, options:{indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{x:{grid:{color:'#EEF3F1'}, ticks:{callback:v=>v+'%'}}, y:{grid:{display:false}}}}});
+  document.getElementById('planTable').innerHTML = GROUPS.map(g=>{
+    const a = groupAnnual(g.key);
+    const likely = a.projPct>=100 ? {t:'Khả năng đạt', c:'star'} : a.projPct>=90 ? {t:'Cần theo dõi', c:'milk'} : {t:'Rủi ro không đạt', c:'kill'};
+    return `<tr>
+      <td><span class="group-icon" style="background:${g.color}1A;">${g.emoji}</span> ${g.name}</td>
+      <td class="num">${fmt(a.annualTarget)}</td>
+      <td class="num">${fmt(a.ytdRev)}</td>
+      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(a.pct,100)}%; background:${g.color};"></div></div><span class="num" style="font-size:12px;">${Math.round(a.pct)}%</span></div></td>
+      <td class="num">${fmt(a.projected)}</td>
+      <td><span class="tag ${likely.c}">${likely.t}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderGroupCards(){
+  document.getElementById('groupCardsGrid').innerHTML = GROUPS.map(g=>{
+    const y = groupYTD(g.key); const inv = currentInventory(g.key); const h = invHealth(inv.actual, inv.target); const a=groupAnnual(g.key);
+    return `<div class="card">
+      <div class="card-head"><h3><span class="group-icon" style="background:${g.color}1A;">${g.emoji}</span> ${g.name}</h3><span class="tag ${h.cls}">${h.label}</span></div>
+      <div style="font-size:12px; color:var(--ink-500); margin-bottom:4px;">Doanh thu YTD</div>
+      <div class="num" style="font-size:20px; font-weight:800; margin-bottom:10px;">${fmt(y.rev)} <span style="font-size:12px; font-weight:600; color:var(--ink-500);">tr đ</span></div>
+      <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--ink-500); margin-bottom:14px;">
+        <span>KH năm: <strong class="num" style="color:var(--ink-900);">${fmt(a.annualTarget)}</strong></span>
+        <span>Tồn kho: <strong class="num" style="color:var(--ink-900);">${fmt(inv.actual)}</strong></span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.min(a.pct,100)}%; background:${g.color};"></div></div>
+      <div style="font-size:11.5px; color:var(--ink-500); margin-top:5px;">${Math.round(a.pct)}% kế hoạch năm</div>
+    </div>`;
+  }).join('');
+}
+
+function renderKDView(){ renderMonthPicker(); renderMonthView(); renderQuarterView(); renderYTDView(); renderPlanView(); renderGroupCards(); }
+
+/* ============================= RENDER: DANH MỤC (BCG) ============================= */
+function renderBCG(){
+  const channel = document.getElementById('bcgChannelPicker').value;
+  const filtered = STATE.portfolio.filter(p=>channel==='all'||p.channel===channel);
+  const quadrants = [
+    {key:'grow', title:'Invest &amp; Grow Aggressively', sub:'Đầu tư và phát triển mạnh mẽ', cls:'grow'},
+    {key:'star', title:'Turn into Star', sub:'Phát triển thành ngôi sao', cls:'star'},
+    {key:'milk', title:'Maintain &amp; Milk', sub:'Duy trì, thu hồi vốn', cls:'milk'},
+    {key:'kill', title:'Killed', cls:'kill', sub:'Chấm dứt đầu tư'},
+  ];
+  document.getElementById('bcgQuadrants').innerHTML = quadrants.map(q=>{
+    const items = filtered.filter(p=>p.stage===q.key);
+    return `<div class="card">
+      <div class="card-head"><h3><span class="tag ${q.cls}">${q.title}</span></h3><span class="hint">${items.length} SKU</span></div>
+      <div style="font-size:12px; color:var(--ink-500); margin-bottom:12px;">${q.sub}</div>
+      ${items.length? items.map(p=>{ const g=groupByKey(p.group); return `<div style="display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--line);">
+        <span class="group-icon" style="background:${g.color}1A; width:26px; height:26px; font-size:13px;">${g.emoji}</span>
+        <div style="flex:1;"><div style="font-size:13px; font-weight:700;">${p.sku}</div><div style="font-size:11.5px; color:var(--ink-500);">${p.role}</div></div>
+      </div>`; }).join('') : `<div class="empty" style="padding:16px;">Không có SKU</div>`}
+    </div>`;
+  }).join('');
+
+  document.getElementById('portfolioTable').innerHTML = filtered.map(p=>{
+    const g = groupByKey(p.group);
+    return `<tr>
+      <td><strong>${p.sku}</strong></td>
+      <td><span class="group-icon" style="background:${g.color}1A; width:24px; height:24px; font-size:12px;">${g.emoji}</span> ${g.name}</td>
+      <td>${p.channel}</td>
+      <td>${p.role}</td>
+      <td><span class="tag ${STAGE_CLS[p.stage]}">${STAGE_LABEL[p.stage]}</span></td>
+      <td class="num">${p.price? fmt(p.price):'—'}</td>
+      <td style="white-space:normal; max-width:220px;">${p.note||''}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ============================= RENDER: PTSPM ============================= */
+function renderPTSPKPI(){
+  const total = STATE.projects.length;
+  const oem = STATE.projects.filter(p=>p.type==='OEM').length;
+  const own = total-oem;
+  const risk = STATE.projects.filter(p=>p.status==='Rủi ro'||p.status==='Chậm tiến độ').length;
+  const done = STATE.projects.filter(p=>p.status==='Hoàn thành').length;
+  document.getElementById('ptspKpi').innerHTML = `
+    <div class="card kpi-card"><div class="label">Tổng số dự án</div><div class="value">${total}</div></div>
+    <div class="card kpi-card"><div class="label">OEM / Tự sản xuất</div><div class="value">${oem} / ${own}</div></div>
+    <div class="card kpi-card"><div class="label">Dự án có rủi ro / chậm</div><div class="value" style="color:${risk?'var(--red)':'inherit'}">${risk}</div></div>
+    <div class="card kpi-card"><div class="label">Đã ra mắt</div><div class="value">${done}</div></div>`;
+}
+function renderPTSPTable(){
+  const typeF = document.getElementById('ptspFilterType').value;
+  const groupF = document.getElementById('ptspFilterGroup').value;
+  const rows = STATE.projects.filter(p=> (typeF==='all'||p.type===typeF) && (groupF==='all'||p.group===groupF) );
+  const statusCls = {'Đúng tiến độ':'star','Rủi ro':'milk','Chậm tiến độ':'kill','Hoàn thành':'grow'};
+  document.getElementById('ptspTable').innerHTML = rows.map(p=>{
+    const g = groupByKey(p.group);
+    return `<tr data-id="${p.id}" style="cursor:pointer;">
+      <td style="white-space:normal; max-width:260px;"><strong>${p.name}</strong></td>
+      <td><span class="group-icon" style="background:${g.color}1A; width:24px; height:24px; font-size:12px;">${g.emoji}</span> ${g.name}</td>
+      <td><span class="tag ${p.type==='OEM'?'grow':'star'}">${p.type}</span></td>
+      <td>${p.stage}</td>
+      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${p.progress}%; background:${g.color};"></div></div><span class="num" style="font-size:12px;">${p.progress}%</span></div></td>
+      <td>${p.launch}</td>
+      <td>${p.pic}</td>
+      <td><span class="tag ${statusCls[p.status]}">${p.status}</span></td>
+      <td><button class="btn ghost sm edit-project" data-id="${p.id}">Sửa</button></td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="9"><div class="empty">Không có dự án phù hợp bộ lọc</div></td></tr>`;
+  document.querySelectorAll('.edit-project').forEach(b=>b.addEventListener('click',(e)=>{ e.stopPropagation(); openProjectModal(parseInt(b.dataset.id)); }));
+}
+function renderPTSP(){
+  const gsel = document.getElementById('ptspFilterGroup');
+  if(gsel.options.length<=1) gsel.innerHTML = `<option value="all">Tất cả nhóm hàng</option>` + GROUPS.map(g=>`<option value="${g.key}">${g.name}</option>`).join('');
+  renderPTSPKPI(); renderPTSPTable();
+}
+
+/* project modal */
+let editingProjectId = null;
+function openProjectModal(id){
+  const psel = document.getElementById('pf-group');
+  if(psel.options.length===0) psel.innerHTML = GROUPS.map(g=>`<option value="${g.key}">${g.name}</option>`).join('');
+  editingProjectId = id || null;
+  const p = id ? STATE.projects.find(x=>x.id===id) : null;
+  document.getElementById('projectModalTitle').textContent = p? 'Chỉnh sửa dự án' : 'Thêm dự án PTSPM';
+  document.getElementById('projectDeleteBtn').style.display = p ? 'inline-flex':'none';
+  document.getElementById('pf-name').value = p?.name || '';
+  document.getElementById('pf-group').value = p?.group || GROUPS[0].key;
+  document.getElementById('pf-type').value = p?.type || 'Tự sản xuất';
+  document.getElementById('pf-stage').value = p?.stage || 'Ý tưởng';
+  document.getElementById('pf-progress').value = p?.progress ?? 10;
+  document.getElementById('pf-launch').value = p?.launch || '';
+  document.getElementById('pf-pic').value = p?.pic || '';
+  document.getElementById('pf-status').value = p?.status || 'Đúng tiến độ';
+  document.getElementById('pf-note').value = p?.note || '';
+  document.getElementById('projectModalOverlay').classList.add('show');
+}
+function closeProjectModal(){ document.getElementById('projectModalOverlay').classList.remove('show'); }
+function saveProject(){
+  const val = {
+    name: document.getElementById('pf-name').value.trim(),
+    group: document.getElementById('pf-group').value,
+    type: document.getElementById('pf-type').value,
+    stage: document.getElementById('pf-stage').value,
+    progress: parseInt(document.getElementById('pf-progress').value)||0,
+    launch: document.getElementById('pf-launch').value,
+    pic: document.getElementById('pf-pic').value.trim(),
+    status: document.getElementById('pf-status').value,
+    note: document.getElementById('pf-note').value.trim(),
+  };
+  if(!val.name){ toast('Vui lòng nhập tên dự án','warn'); return; }
+  if(editingProjectId){
+    const idx = STATE.projects.findIndex(x=>x.id===editingProjectId);
+    STATE.projects[idx] = {...STATE.projects[idx], ...val};
+  } else {
+    const newId = Math.max(0,...STATE.projects.map(p=>p.id))+1;
+    STATE.projects.push({id:newId, ...val});
+  }
+  pushUpdate('PTSPM', {id:editingProjectId||'new', ...val});
+  closeProjectModal(); renderPTSP(); renderAlerts(); renderNav(); renderOverview();
+  toast('Đã lưu dự án', 'ok');
+}
+function deleteProject(){
+  if(!editingProjectId) return;
+  STATE.projects = STATE.projects.filter(p=>p.id!==editingProjectId);
+  pushUpdate('PTSPM', {id:editingProjectId, _delete:true});
+  closeProjectModal(); renderPTSP(); renderAlerts(); renderNav(); renderOverview();
+  toast('Đã xóa dự án', 'ok');
+}
+
+/* ============================= RENDER: CẢNH BÁO & TODO ============================= */
+function renderAlerts(){
+  const alerts = computeAlerts();
+  document.getElementById('alertList').innerHTML = alerts.map(alertHtml).join('') || `<div class="empty">Không có cảnh báo nào 🎉</div>`;
+}
+function renderTodos(){
+  document.getElementById('todoList').innerHTML = STATE.todos.map(t=>`
+    <div class="todo-item ${t.done?'done':''}" data-id="${t.id}">
+      <input type="checkbox" ${t.done?'checked':''}>
+      <span class="todo-text">${t.text}</span>
+      <button class="todo-del">✕</button>
+    </div>`).join('') || `<div class="empty">Chưa có việc cần làm</div>`;
+  document.querySelectorAll('.todo-item input').forEach(cb=>cb.addEventListener('change',()=>{
+    const id = parseInt(cb.closest('.todo-item').dataset.id);
+    STATE.todos.find(t=>t.id===id).done = cb.checked;
+    pushUpdate('Todo', {id, done:cb.checked});
+    renderTodos();
+  }));
+  document.querySelectorAll('.todo-del').forEach(b=>b.addEventListener('click',()=>{
+    const id = parseInt(b.closest('.todo-item').dataset.id);
+    STATE.todos = STATE.todos.filter(t=>t.id!==id);
+    pushUpdate('Todo', {id, _delete:true});
+    renderTodos();
+  }));
+}
+function addTodo(){
+  const inp = document.getElementById('todoInput');
+  const text = inp.value.trim();
+  if(!text) return;
+  const id = Math.max(0,...STATE.todos.map(t=>t.id))+1;
+  STATE.todos.push({id, text, done:false});
+  pushUpdate('Todo', {id, text, done:false});
+  inp.value='';
+  renderTodos();
+}
+
+/* ============================= RENDER ALL ============================= */
+function renderAll(){
+  renderNav();
+  renderOverview();
+  renderKDView();
+  renderBCG();
+  renderPTSP();
+  renderAlerts();
+  renderTodos();
+  refreshConnectionUI();
+}
+
+/* ============================= EVENTS ============================= */
+document.getElementById('kdSubtabs').addEventListener('click', e=>{
+  const b = e.target.closest('.subtab'); if(!b) return;
+  document.querySelectorAll('#kdSubtabs .subtab').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.querySelectorAll('#view-kd-ton-kho .subview').forEach(x=>x.classList.remove('active'));
+  document.getElementById('sub-'+b.dataset.sub).classList.add('active');
+});
+document.getElementById('bcgChannelPicker').addEventListener('change', renderBCG);
+document.getElementById('ptspFilterType').addEventListener('change', renderPTSPTable);
+document.getElementById('ptspFilterGroup').addEventListener('change', renderPTSPTable);
+document.getElementById('addProjectBtn').addEventListener('click', ()=>openProjectModal(null));
+document.getElementById('projectModalClose').addEventListener('click', closeProjectModal);
+document.getElementById('projectCancelBtn').addEventListener('click', closeProjectModal);
+document.getElementById('projectSaveBtn').addEventListener('click', saveProject);
+document.getElementById('projectDeleteBtn').addEventListener('click', deleteProject);
+document.getElementById('projectModalOverlay').addEventListener('click', e=>{ if(e.target.id==='projectModalOverlay') closeProjectModal(); });
+document.getElementById('todoAddBtn').addEventListener('click', addTodo);
+document.getElementById('todoInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addTodo(); });
+
+function toggleEditMode(){
+  STATE.editMode = !STATE.editMode;
+  document.querySelectorAll('.switch').forEach(s=>s.classList.toggle('on', STATE.editMode));
+  document.getElementById('editHintThang').textContent = STATE.editMode ? 'Nhấn vào ô số liệu để chỉnh sửa, thay đổi sẽ tự lưu' : 'Bật "Chế độ chỉnh sửa" để nhập số liệu thực tế';
+  renderMonthView();
+}
+document.getElementById('editSwitch').addEventListener('click', toggleEditMode);
+document.getElementById('editSwitch2').addEventListener('click', toggleEditMode);
+document.getElementById('syncBtn').addEventListener('click', async ()=>{ await loadFromSheet(); });
+document.getElementById('testConnBtn').addEventListener('click', testConnection);
+document.getElementById('loadFromSheetBtn').addEventListener('click', loadFromSheet);
+document.getElementById('scriptUrlInput').addEventListener('change', e=>{ STATE.scriptUrl = e.target.value.trim(); refreshConnectionUI(); });
+
+/* ============================= INIT ============================= */
+document.getElementById('footYear').textContent = 'Cập nhật: ' + new Date().toLocaleDateString('vi-VN');
+if(APPS_SCRIPT_URL_DEFAULT) document.getElementById('scriptUrlInput').value = APPS_SCRIPT_URL_DEFAULT;
+renderAll();
+</script>
+</body>
+</html>
