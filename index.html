@@ -5,1263 +5,1319 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Livotec · Product Management Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 <style>
-/* ============================= TOKENS ============================= */
 :root{
-  --mint-900:#063D33; --mint-700:#0E7C63; --mint-600:#12977A; --mint-500:#1BB894;
-  --mint-200:#BFE8DC; --mint-100:#E7F7F2; --mint-50:#F5FBF9;
-  --ink-900:#0E211C; --ink-700:#324A43; --ink-500:#6C8079; --ink-300:#9FB0AA;
-  --line:#DEEBE5; --line-strong:#C7DCD4; --white:#FFFFFF;
-  --amber:#DE9A2E; --amber-bg:#FCF2DF;
-  --red:#D65B5B; --red-bg:#FBEBEB;
-  --blue:#3E76D6; --blue-bg:#EAF1FC;
-  --star:#12977A; --grow:#3E76D6; --milk:#DE9A2E; --kill:#D65B5B;
-  --radius:14px; --radius-sm:9px;
-  --shadow-sm:0 1px 2px rgba(14,33,28,.06), 0 1px 1px rgba(14,33,28,.04);
-  --shadow-md:0 6px 20px rgba(14,33,28,.08);
-  --sidebar-w:248px;
+  --bg:#F3FAF8;
+  --surface:#FFFFFF;
+  --surface-2:#FBFEFD;
+  --mint-50:#E7F7F2;
+  --mint-100:#D2F0E6;
+  --mint-300:#8FDBC4;
+  --mint-400:#4FC3AA;
+  --mint-500:#2FAF93;
+  --mint-600:#1C927A;
+  --mint-700:#137863;
+  --mint-800:#0E5E4E;
+  --ink-900:#152420;
+  --ink-700:#33443F;
+  --ink-500:#5E736D;
+  --ink-400:#87998F;
+  --line:#DCEEE8;
+  --line-strong:#C3E2D9;
+  --amber-500:#DE9A2C;
+  --amber-100:#FBEDD3;
+  --red-500:#D3564C;
+  --red-100:#FBE1DE;
+  --blue-500:#3E7CB1;
+  --blue-100:#DFEBF5;
+  --violet-500:#7C6FC4;
+  --violet-100:#EFECFA;
+  --shadow-sm: 0 1px 2px rgba(14,94,78,.06);
+  --shadow-md: 0 6px 20px rgba(14,94,78,.08);
+  --radius: 14px;
+  --radius-sm: 9px;
+  --f-head: Tahoma, Verdana, Geneva, sans-serif;
+  --f-body: 'Inter', system-ui, sans-serif;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;}
 body{
-  font-family:'Be Vietnam Pro',-apple-system,Segoe UI,Roboto,sans-serif;
-  background:var(--mint-50);
+  background:var(--bg);
   color:var(--ink-900);
-  font-size:15px;
+  font-family:var(--f-body);
+  font-size:15.5px;
   line-height:1.5;
   -webkit-font-smoothing:antialiased;
 }
-.num, .mono{font-family:'JetBrains Mono',ui-monospace,monospace; font-variant-numeric:tabular-nums;}
-h1,h2,h3,h4{margin:0; font-weight:700; letter-spacing:-.01em;}
-button{font-family:inherit; cursor:pointer;}
+h1,h2,h3,h4{font-family:var(--f-head);margin:0;color:var(--ink-900);}
+.mono{font-variant-numeric:tabular-nums;}
 a{color:inherit;}
-::selection{background:var(--mint-200);}
-:focus-visible{outline:2px solid var(--mint-600); outline-offset:2px;}
+button{font-family:inherit;cursor:pointer;}
 
-/* ============================= LAYOUT ============================= */
-.app{display:flex; min-height:100vh;}
+.app{display:grid;grid-template-columns:256px 1fr;min-height:100vh;}
 .sidebar{
-  width:var(--sidebar-w); flex:0 0 auto; background:var(--mint-900);
-  color:var(--mint-100); display:flex; flex-direction:column; position:sticky; top:0; height:100vh;
+  background:linear-gradient(180deg,var(--mint-800) 0%, var(--mint-700) 100%);
+  color:#EAFBF6;padding:22px 16px 20px;position:sticky;top:0;height:100vh;
+  display:flex;flex-direction:column;gap:3px;overflow-y:auto;
 }
-.brand{display:flex; align-items:center; gap:10px; padding:22px 20px 18px; border-bottom:1px solid rgba(255,255,255,.08);}
-.brand-mark{
-  width:34px; height:34px; border-radius:10px; background:linear-gradient(145deg,var(--mint-500),var(--mint-700));
-  display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:15px; flex:0 0 auto;
-}
-.brand-text{line-height:1.15;}
-.brand-text .name{font-weight:800; font-size:15.5px; color:#fff;}
-.brand-text .sub{font-size:11px; color:var(--mint-200); letter-spacing:.04em; text-transform:uppercase;}
+.brand{display:flex;align-items:center;gap:10px;padding:6px 8px 20px;}
+.brand-mark{width:40px;height:40px;flex:0 0 auto;}
+.brand-name{font-family:var(--f-head);font-weight:700;font-size:19px;letter-spacing:.3px;color:#fff;}
+.brand-sub{font-size:10.5px;color:var(--mint-100);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:1px;}
 
-.nav{flex:1; overflow-y:auto; padding:14px 10px;}
-.nav-group{margin-bottom:6px;}
-.nav-label{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:rgba(230,247,242,.45); padding:14px 10px 6px;}
-.nav-item{
-  display:flex; align-items:center; gap:10px; width:100%; border:none; background:none; color:rgba(255,255,255,.82);
-  padding:10px 12px; border-radius:10px; font-size:13.8px; font-weight:500; text-align:left; margin-bottom:2px; transition:background .12s,color .12s;
-}
-.nav-item svg{flex:0 0 auto; opacity:.85;}
-.nav-item:hover{background:rgba(255,255,255,.07); color:#fff;}
-.nav-item.active{background:var(--mint-600); color:#fff; font-weight:600;}
+.nav-group-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--mint-300);font-weight:700;padding:13px 12px 5px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;color:#D6F3EA;font-weight:600;font-size:14px;cursor:pointer;transition:background .15s ease;border:1px solid transparent;}
+.nav-item svg{width:17px;height:17px;flex:0 0 auto;opacity:.9;}
+.nav-item:hover{background:rgba(255,255,255,.08);}
+.nav-item.active{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.12);}
 .nav-item.active svg{opacity:1;}
-.nav-item .badge{margin-left:auto; background:rgba(255,255,255,.15); font-size:10.5px; padding:1px 7px; border-radius:99px; font-weight:700;}
-.nav-item.alert .badge{background:var(--kill); color:#fff;}
+.nav-badge{margin-left:auto;font-size:10.5px;font-weight:800;background:rgba(255,255,255,.16);padding:1px 7px;border-radius:20px;}
+.sidebar-foot{margin-top:auto;padding:14px 12px 4px;border-top:1px solid rgba(255,255,255,.12);}
+.sync-pill{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--mint-100);}
+.dot{width:7px;height:7px;border-radius:50%;background:#7CE8C6;box-shadow:0 0 0 3px rgba(124,232,198,.25);}
+.dot.off{background:#E8A96B;box-shadow:0 0 0 3px rgba(232,169,107,.25);}
 
-.sidebar-foot{padding:14px 18px 18px; border-top:1px solid rgba(255,255,255,.08); font-size:11.5px; color:rgba(230,247,242,.55);}
-.conn-row{display:flex; align-items:center; gap:7px; margin-bottom:4px;}
-.dot{width:8px; height:8px; border-radius:50%; background:var(--ink-300); flex:0 0 auto;}
-.dot.on{background:#5FDCB2; box-shadow:0 0 0 3px rgba(95,220,178,.25);}
-.dot.mock{background:var(--amber); box-shadow:0 0 0 3px rgba(222,154,46,.25);}
+.main{padding:0;}
+.topbar{position:sticky;top:0;z-index:5;background:rgba(243,250,248,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.topbar h1{font-size:21px;font-weight:700;}
+.topbar p{margin:2px 0 0;color:var(--ink-500);font-size:13.5px;font-family:var(--f-body);}
+.topbar-actions{display:flex;align-items:center;gap:10px;}
+.content{padding:26px 32px 64px;max-width:1480px;}
 
-.main{flex:1; min-width:0; display:flex; flex-direction:column;}
-.topbar{
-  position:sticky; top:0; z-index:20; background:rgba(245,251,249,.9); backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--line); padding:16px 28px; display:flex; align-items:center; justify-content:space-between; gap:16px;
-}
-.topbar h1{font-size:19px;}
-.topbar .crumb{font-size:12.5px; color:var(--ink-500); font-weight:500; margin-bottom:2px;}
-.top-actions{display:flex; align-items:center; gap:10px;}
+.banner{display:flex;align-items:center;gap:10px;background:var(--amber-100);color:#8A5B12;border:1px solid #F0D18F;padding:10px 16px;border-radius:var(--radius-sm);font-size:13.5px;font-weight:600;margin-bottom:20px;}
+.banner.ok{background:var(--mint-50);color:var(--mint-800);border-color:var(--mint-300);}
+.banner svg{width:16px;height:16px;flex:0 0 auto;}
 
-.pill{display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:99px; font-size:12.5px; font-weight:600; border:1px solid var(--line-strong); background:#fff;}
-.pill.ok{color:var(--mint-700); border-color:var(--mint-200); background:var(--mint-100);}
-.pill.mock{color:var(--amber); border-color:#F0DDB0; background:var(--amber-bg);}
+.grid{display:grid;gap:18px;}
+.g-4{grid-template-columns:repeat(4,1fr);}
+.g-3{grid-template-columns:repeat(3,1fr);}
+.g-2{grid-template-columns:repeat(2,1fr);}
+@media (max-width:1150px){.g-4{grid-template-columns:repeat(2,1fr);} .g-3{grid-template-columns:repeat(2,1fr);}}
 
-.switch{display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:600; color:var(--ink-700);}
-.switch-track{width:38px; height:22px; border-radius:99px; background:var(--line-strong); position:relative; transition:background .15s;}
-.switch-track::after{content:''; position:absolute; width:16px; height:16px; border-radius:50%; background:#fff; top:3px; left:3px; box-shadow:var(--shadow-sm); transition:transform .15s;}
-.switch.on .switch-track{background:var(--mint-600);}
-.switch.on .switch-track::after{transform:translateX(16px);}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:20px;}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;flex-wrap:wrap;}
+.card-title{font-size:15.5px;font-weight:700;font-family:var(--f-head);}
+.card-sub{font-size:12.5px;color:var(--ink-500);margin-top:2px;font-family:var(--f-body);}
 
-.btn{display:inline-flex; align-items:center; gap:7px; padding:8px 15px; border-radius:10px; font-size:13px; font-weight:600; border:1px solid var(--line-strong); background:#fff; color:var(--ink-700); transition:all .12s;}
-.btn:hover{border-color:var(--mint-500); color:var(--mint-700);}
-.btn.primary{background:var(--mint-600); border-color:var(--mint-600); color:#fff;}
-.btn.primary:hover{background:var(--mint-700); border-color:var(--mint-700); color:#fff;}
-.btn.ghost{border-color:transparent; background:transparent;}
-.btn.sm{padding:5px 10px; font-size:12px; border-radius:8px;}
-.btn:disabled{opacity:.5; cursor:not-allowed;}
-.btn svg{flex:0 0 auto;}
+.kpi{position:relative;overflow:hidden;}
+.kpi-label{font-size:12.5px;color:var(--ink-500);font-weight:600;}
+.kpi-value{font-family:var(--f-head);font-size:27px;font-weight:700;margin-top:6px;color:var(--mint-800);}
+.kpi-delta{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;margin-top:8px;padding:3px 8px;border-radius:20px;}
+.kpi-delta.up{background:var(--mint-50);color:var(--mint-700);}
+.kpi-delta.down{background:var(--red-100);color:var(--red-500);}
+.kpi-icon{position:absolute;right:16px;top:16px;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--mint-50);color:var(--mint-700);}
+.kpi-icon svg{width:18px;height:18px;}
 
-.content{flex:1; padding:24px 28px 60px;}
-.view{display:none;}
-.view.active{display:block; animation:fade .25s ease;}
-@keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;}
+.badge.mint{background:var(--mint-50);color:var(--mint-700);}
+.badge.blue{background:var(--blue-100);color:var(--blue-500);}
+.badge.amber{background:var(--amber-100);color:#8A5B12;}
+.badge.red{background:var(--red-100);color:var(--red-500);}
+.badge.violet{background:var(--violet-100);color:var(--violet-500);}
+.badge.grey{background:#EEF3F1;color:var(--ink-500);}
 
-/* ============================= GRID / CARDS ============================= */
-.grid{display:grid; gap:16px;}
-.grid-4{grid-template-columns:repeat(4,1fr);}
-.grid-3{grid-template-columns:repeat(3,1fr);}
-.grid-2{grid-template-columns:repeat(2,1fr);}
-@media(max-width:1200px){.grid-4{grid-template-columns:repeat(2,1fr);} .grid-3{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:760px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr;}}
+.progress{height:8px;border-radius:20px;background:var(--mint-50);overflow:hidden;}
+.progress > span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,var(--mint-400),var(--mint-600));}
+.progress.warn > span{background:linear-gradient(90deg,#F0C05C,var(--amber-500));}
+.progress.danger > span{background:linear-gradient(90deg,#E68880,var(--red-500));}
 
-.card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow-sm);}
-.card-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:10px;}
-.card-head h3{font-size:14.5px; color:var(--ink-900);}
-.card-head .hint{font-size:12px; color:var(--ink-500); font-weight:500;}
-
-.kpi-card{position:relative; overflow:hidden;}
-.kpi-card .label{font-size:12.5px; color:var(--ink-500); font-weight:600; margin-bottom:8px; display:flex; align-items:center; gap:6px;}
-.kpi-card .value{font-size:26px; font-weight:800; font-family:'JetBrains Mono',monospace; letter-spacing:-.02em;}
-.kpi-card .delta{display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700; margin-top:8px; padding:2px 8px; border-radius:99px;}
-.delta.up{color:var(--mint-700); background:var(--mint-100);}
-.delta.down{color:var(--kill); background:var(--red-bg);}
-.kpi-card .icon-badge{position:absolute; top:16px; right:16px; width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center;}
-
-.section-title{display:flex; align-items:center; justify-content:space-between; margin:30px 0 14px;}
-.section-title h2{font-size:16px;}
-.section-title .desc{font-size:12.5px; color:var(--ink-500); margin-top:2px; font-weight:500;}
-
-/* tag pills for BCG lifecycle stage - reused across modules */
-.tag{display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:99px; font-size:11.5px; font-weight:700; white-space:nowrap;}
-.tag::before{content:''; width:6px; height:6px; border-radius:50%; background:currentColor;}
-.tag.grow{color:var(--grow); background:var(--blue-bg);}
-.tag.star{color:var(--star); background:var(--mint-100);}
-.tag.milk{color:var(--milk); background:var(--amber-bg);}
-.tag.kill{color:var(--kill); background:var(--red-bg);}
-.tag.neutral{color:var(--ink-500); background:#EEF3F1;}
-
-/* subtabs */
-.subtabs{display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:0;}
-.subtab{padding:9px 15px; font-size:13px; font-weight:600; color:var(--ink-500); background:none; border:none; border-bottom:2px solid transparent; margin-bottom:-1px;}
-.subtab:hover{color:var(--ink-900);}
-.subtab.active{color:var(--mint-700); border-bottom-color:var(--mint-600);}
-.subview{display:none;}
-.subview.active{display:block; animation:fade .2s ease;}
-
-/* table */
-.table-wrap{overflow-x:auto; border-radius:var(--radius); border:1px solid var(--line);}
-table{width:100%; border-collapse:collapse; background:#fff; font-size:13px;}
-thead th{
-  text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-500);
-  background:var(--mint-50); padding:10px 14px; border-bottom:1px solid var(--line); white-space:nowrap; font-weight:700;
-}
-tbody td{padding:10px 14px; border-bottom:1px solid var(--line); white-space:nowrap; color:var(--ink-700);}
-tbody tr:last-child td{border-bottom:none;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-500);font-weight:700;padding:9px 11px;border-bottom:2px solid var(--line);background:var(--surface-2);position:sticky;top:0;}
+td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:middle;}
 tbody tr:hover{background:var(--mint-50);}
-td.num, th.num{text-align:right; font-family:'JetBrains Mono',monospace;}
-td strong{color:var(--ink-900);}
-.editable-cell{position:relative;}
-.editable-cell input{
-  width:100%; border:1px solid transparent; background:transparent; font:inherit; color:inherit; padding:4px 6px; border-radius:6px;
-  font-family:'JetBrains Mono',monospace; text-align:right;
-}
-.edit-mode .editable-cell input{border-color:var(--line-strong); background:var(--mint-50);}
-.edit-mode .editable-cell input:focus{border-color:var(--mint-600); background:#fff;}
+.table-wrap{overflow:auto;border-radius:10px;border:1px solid var(--line);max-height:520px;}
+.right{text-align:right;}
+.center{text-align:center;}
+.nowrap{white-space:nowrap;}
 
-.bar-cell{display:flex; align-items:center; gap:8px; min-width:140px;}
-.bar-track{flex:1; height:7px; border-radius:99px; background:var(--line); overflow:hidden;}
-.bar-fill{height:100%; border-radius:99px; background:var(--mint-600);}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 15px;border-radius:9px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-700);font-weight:700;font-size:13px;transition:all .15s ease;}
+.btn:hover{border-color:var(--mint-500);color:var(--mint-700);}
+.btn.primary{background:var(--mint-600);color:#fff;border-color:var(--mint-600);}
+.btn.primary:hover{background:var(--mint-700);border-color:var(--mint-700);color:#fff;}
+.btn.sm{padding:6px 10px;font-size:12px;border-radius:7px;}
+.btn svg{width:15px;height:15px;}
 
-.progress-ring-wrap{display:flex; align-items:center; gap:14px;}
+select, input[type=text], input[type=number], input[type=date]{font-family:inherit;font-size:13px;padding:8px 10px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-900);outline:none;}
+select:focus, input:focus{border-color:var(--mint-500);box-shadow:0 0 0 3px var(--mint-50);}
 
-.group-icon{width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:15px; flex:0 0 auto;}
+.tabs{display:flex;gap:6px;background:var(--surface-2);padding:4px;border-radius:10px;border:1px solid var(--line);width:fit-content;}
+.tab{padding:8px 15px;border-radius:8px;font-weight:700;font-size:13px;color:var(--ink-500);}
+.tab.active{background:var(--mint-600);color:#fff;}
 
-.chart-box{position:relative; height:260px;}
-.chart-box.sm{height:180px;}
+.section{display:none;}
+.section.active{display:block;animation:fadeIn .22s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);} to{opacity:1;transform:none;}}
 
-.two-col{display:grid; grid-template-columns:1.5fr 1fr; gap:16px;}
-@media(max-width:1000px){.two-col{grid-template-columns:1fr;}}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px;}
+.filters .grp{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-500);font-weight:700;}
 
-.footer-note{margin-top:36px; padding-top:16px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-300); display:flex; justify-content:space-between;}
+.chart-box{position:relative;height:280px;}
+.chart-box.sm{height:220px;}
+.chart-box.lg{height:340px;}
 
-/* toasts */
-#toast-container{position:fixed; bottom:20px; right:20px; z-index:200; display:flex; flex-direction:column; gap:8px;}
-.toast{background:var(--ink-900); color:#fff; padding:11px 16px; border-radius:10px; font-size:13px; font-weight:500; box-shadow:var(--shadow-md); display:flex; align-items:center; gap:8px; animation:toastin .2s ease;}
-.toast.ok{background:var(--mint-700);}
-.toast.warn{background:var(--amber);}
-@keyframes toastin{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+.empty-hint{color:var(--ink-500);font-size:13px;padding:22px;text-align:center;}
 
-/* modal */
-.overlay{position:fixed; inset:0; background:rgba(14,33,28,.45); display:none; align-items:center; justify-content:center; z-index:100; padding:20px;}
-.overlay.show{display:flex;}
-.modal{background:#fff; border-radius:16px; width:100%; max-width:520px; max-height:88vh; overflow-y:auto; box-shadow:var(--shadow-md);}
-.modal-head{padding:18px 22px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
-.modal-head h3{font-size:15.5px;}
-.modal-body{padding:20px 22px; display:flex; flex-direction:column; gap:14px;}
-.modal-foot{padding:16px 22px; border-top:1px solid var(--line); display:flex; justify-content:flex-end; gap:10px;}
-.field{display:flex; flex-direction:column; gap:6px;}
-.field label{font-size:12.5px; font-weight:700; color:var(--ink-700);}
-.field input, .field select, .field textarea{
-  border:1px solid var(--line-strong); border-radius:9px; padding:9px 11px; font:inherit; font-size:13.5px; color:var(--ink-900); background:var(--mint-50);
-}
-.field input:focus, .field select:focus, .field textarea:focus{background:#fff; border-color:var(--mint-600);}
-.field-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+/* Kanban */
+.kanban{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;}
+.kcol{flex:0 0 240px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px;}
+.kcol-head{font-size:12px;font-weight:700;color:var(--mint-800);display:flex;justify-content:space-between;margin-bottom:8px;padding:0 2px;}
+.kcard{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:9px 10px;margin-bottom:8px;box-shadow:var(--shadow-sm);}
+.kcard .m{font-weight:700;font-size:12.5px;}
+.kcard .s{font-size:11px;color:var(--ink-500);margin-top:2px;}
+.kcard .progress{margin-top:7px;}
 
-.close-x{border:none; background:none; color:var(--ink-500); width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center;}
-.close-x:hover{background:var(--mint-50); color:var(--ink-900);}
+/* Matrix */
+.matrix{border-collapse:collapse;width:100%;}
+.matrix th, .matrix td{border:1px solid var(--line);text-align:center;padding:10px;font-size:13px;}
+.matrix th{background:var(--surface-2);font-weight:700;color:var(--ink-700);}
+.matrix td.cell{font-family:var(--f-head);font-weight:700;font-size:16px;cursor:pointer;transition:transform .12s ease;}
+.matrix td.cell:hover{transform:scale(1.04);}
 
-.empty{text-align:center; padding:40px 20px; color:var(--ink-500);}
-.empty svg{margin-bottom:10px; opacity:.5;}
+.log-item{border-left:3px solid var(--mint-400);padding:10px 14px;margin-bottom:12px;background:var(--surface-2);border-radius:0 10px 10px 0;}
+.log-item .meta{font-size:11.5px;color:var(--ink-500);margin-bottom:5px;display:flex;gap:10px;flex-wrap:wrap;}
+.log-item .row-line{font-size:13px;margin:3px 0;}
+.log-item .row-line b{color:var(--mint-800);}
 
-.alert-item{display:flex; gap:12px; padding:14px 16px; border:1px solid var(--line); border-radius:12px; margin-bottom:10px; background:#fff;}
-.alert-item .ic{width:34px; height:34px; border-radius:10px; flex:0 0 auto; display:flex; align-items:center; justify-content:center;}
-.alert-item .body{flex:1;}
-.alert-item .title{font-weight:700; font-size:13.5px; margin-bottom:2px;}
-.alert-item .desc{font-size:12.5px; color:var(--ink-500);}
-.alert-item.sev-high .ic{background:var(--red-bg); color:var(--kill);}
-.alert-item.sev-mid .ic{background:var(--amber-bg); color:var(--amber);}
-.alert-item.sev-low .ic{background:var(--blue-bg); color:var(--blue);}
+.qa-check{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;}
+.qa-check .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+.qa-check.pass .ic{background:var(--mint-50);color:var(--mint-700);}
+.qa-check.fail .ic{background:var(--red-100);color:var(--red-500);}
+.qa-check .txt b{display:block;font-size:13.5px;}
+.qa-check .txt span{font-size:12px;color:var(--ink-500);}
 
-.todo-item{display:flex; align-items:center; gap:10px; padding:10px 14px; border:1px solid var(--line); border-radius:10px; margin-bottom:8px; background:#fff;}
-.todo-item input[type=checkbox]{width:17px; height:17px; accent-color:var(--mint-600);}
-.todo-item.done .todo-text{text-decoration:line-through; color:var(--ink-300);}
-.todo-text{flex:1; font-size:13.5px;}
-.todo-del{border:none; background:none; color:var(--ink-300); padding:4px;}
-.todo-del:hover{color:var(--kill);}
+.toast-wrap{position:fixed;bottom:22px;right:26px;z-index:50;display:flex;flex-direction:column;gap:8px;}
+.toast{background:var(--ink-900);color:#fff;padding:11px 16px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:8px;}
+.toast.ok{background:var(--mint-800);}
+.toast.warn{background:#8A5B12;}
 
-.stage-track{display:flex; gap:4px; margin-top:16px;}
-.stage-seg{flex:1; height:8px; border-radius:99px; background:var(--line);}
-.stage-seg.done{background:var(--mint-600);}
-.stage-seg.current{background:var(--milk);}
+.spin{animation:spin 1.1s linear infinite;transform-origin:center;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-.settings-form{max-width:620px;}
-.help-box{background:var(--mint-100); border:1px solid var(--mint-200); border-radius:12px; padding:14px 16px; font-size:12.8px; color:var(--mint-900); line-height:1.6;}
-.help-box code{background:#fff; padding:1px 6px; border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:11.8px; border:1px solid var(--mint-200);}
-
-@media(max-width:900px){
-  .sidebar{position:fixed; left:0; top:0; bottom:0; transform:translateX(-100%); transition:transform .2s; z-index:50;}
-  .sidebar.open{transform:none;}
-  .main{width:100%;}
-}
+.settings-row{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;max-width:680px;}
+.settings-row label{font-weight:700;font-size:13px;font-family:var(--f-head);}
+.settings-row .hint{font-size:12px;color:var(--ink-500);}
+code{background:var(--mint-50);color:var(--mint-800);padding:2px 6px;border-radius:5px;font-size:12.5px;}
 </style>
 </head>
 <body>
 
 <div class="app">
-  <!-- ============================= SIDEBAR ============================= -->
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar">
     <div class="brand">
-      <div class="brand-mark">LV</div>
-      <div class="brand-text">
-        <div class="name">Livotec</div>
-        <div class="sub">Product Management</div>
+      <svg class="brand-mark" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="19" stroke="#7CE8C6" stroke-width="1.4"/>
+        <g id="fanIcon" style="transform-origin:20px 20px;">
+          <path d="M20 20 C20 10, 12 7, 8 12 C13 15, 16 18, 20 20Z" fill="#7CE8C6"/>
+          <path d="M20 20 C29 17, 32 9, 27 6 C24 11, 22 15, 20 20Z" fill="#4FC3AA"/>
+          <path d="M20 20 C24 29, 32 30, 33 24 C27 23, 23 21, 20 20Z" fill="#2FAF93"/>
+          <path d="M20 20 C13 26, 9 33, 14 36 C17 30, 18 24, 20 20Z" fill="#1C927A"/>
+        </g>
+        <circle cx="20" cy="20" r="3.4" fill="#F3FAF8"/>
+      </svg>
+      <div>
+        <div class="brand-name">LIVOTEC</div>
+        <div class="brand-sub">Product Management</div>
       </div>
     </div>
-    <nav class="nav" id="navList"></nav>
+
+    <div class="nav-group-label">Báo cáo</div>
+    <div class="nav-item active" data-section="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Tổng quan</div>
+    <div class="nav-item" data-section="business"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21V9M9 21V4M15 21v-7M21 21V12"/></svg>Kinh doanh</div>
+    <div class="nav-item" data-section="inventory"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></svg>Tồn kho</div>
+    <div class="nav-item" data-section="portfolio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Danh mục sản phẩm</div>
+    <div class="nav-item" data-section="projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3v4M15 3v4M4 8h16M5 8v11a1 1 0 001 1h12a1 1 0 001-1V8"/><path d="M9 13l2 2 4-4"/></svg>Dự án PTSPM</div>
+    <div class="nav-item" data-section="alerts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>Cảnh báo</div>
+
+    <div class="nav-group-label">Quản trị</div>
+    <div class="nav-item" data-section="pmperf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 014-4h6a4 4 0 014 4v2"/><path d="M17 3.13a4 4 0 010 7.75M22 21v-2a4 4 0 00-3-3.87"/></svg>Hiệu suất PM</div>
+    <div class="nav-item" data-section="dataqa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>Data QA</div>
+    <div class="nav-item" data-section="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Kết nối dữ liệu</div>
+
     <div class="sidebar-foot">
-      <div class="conn-row"><span class="dot" id="sideDot"></span><span id="sideConnText">Chưa kết nối Google Sheet</span></div>
-      <div id="sideSyncText">Dữ liệu mẫu (demo)</div>
+      <div class="sync-pill"><span class="dot off" id="syncDot"></span><span id="syncLabel">Đang tải dữ liệu…</span></div>
     </div>
   </aside>
 
-  <!-- ============================= MAIN ============================= -->
-  <div class="main">
-    <header class="topbar">
+  <main class="main">
+    <div class="topbar">
       <div>
-        <div class="crumb" id="crumbText">Product Management</div>
         <h1 id="pageTitle">Tổng quan</h1>
+        <p id="pageSub">Bức tranh chung về kinh doanh, tồn kho và dự án phát triển sản phẩm</p>
       </div>
-      <div class="top-actions">
-        <div class="switch" id="editSwitch" role="button" tabindex="0">
-          <span>Chế độ chỉnh sửa</span>
-          <span class="switch-track"></span>
-        </div>
-        <span class="pill mock" id="connPill">● Chế độ xem mẫu</span>
-        <button class="btn" id="syncBtn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
-          Đồng bộ
-        </button>
+      <div class="topbar-actions">
+        <button class="btn" id="syncBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7"/><path d="M21 3v6h-6"/></svg>Đồng bộ</button>
+        <button class="btn primary" id="exportBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>Xuất CSV</button>
       </div>
-    </header>
+    </div>
 
     <div class="content">
+      <div id="loadBanner" class="banner" style="display:none;"></div>
 
-      <!-- ================= 1. TỔNG QUAN ================= -->
-      <section class="view active" id="view-tong-quan">
-        <div class="grid grid-4" id="kpiRow"></div>
-
-        <div class="section-title">
-          <div><h2>Doanh số &amp; tồn kho 12 tháng</h2><div class="desc">Toàn ngành hàng — thực tế so với kế hoạch</div></div>
-        </div>
-        <div class="two-col">
-          <div class="card"><div class="card-head"><h3>Doanh thu thực tế vs kế hoạch (triệu đ)</h3><span class="hint">Năm 2026</span></div>
-            <div class="chart-box"><canvas id="chartOverviewRevenue"></canvas></div>
+      <!-- 1. TỔNG QUAN -->
+      <section class="section active" id="sec-overview">
+        <div class="filters">
+          <div class="tabs" id="ovPeriodTabs">
+            <div class="tab active" data-period="month">Theo tháng</div>
+            <div class="tab" data-period="quarter">Theo quý</div>
+            <div class="tab" data-period="ytd">YTD</div>
           </div>
-          <div class="card"><div class="card-head"><h3>Tỷ trọng doanh thu theo nhóm hàng</h3><span class="hint">YTD</span></div>
-            <div class="chart-box"><canvas id="chartOverviewShare"></canvas></div>
-          </div>
+          <div class="grp">Kỳ: <select id="ovPeriodSelect"></select></div>
         </div>
-
-        <div class="section-title">
-          <div><h2>Tổng quan theo nhóm sản phẩm</h2><div class="desc">Doanh thu YTD, tồn kho hiện tại, tiến độ kế hoạch năm</div></div>
+        <div class="grid g-4" id="ovKpiRow"></div>
+        <div class="card" style="margin-top:18px;">
+          <div class="card-head"><div><div class="card-title">Doanh thu &amp; Sản lượng theo tháng</div><div class="card-sub">12 tháng từ tháng 1, năm hiện tại theo dữ liệu</div></div></div>
+          <div class="chart-box lg"><canvas id="chartOverviewTrend"></canvas></div>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr>
-              <th>Nhóm sản phẩm</th><th class="num">DT YTD (tr đ)</th><th class="num">KH năm (tr đ)</th>
-              <th>Tiến độ KH năm</th><th class="num">Tồn kho (chiếc)</th><th>Sức khỏe tồn kho</th><th>Vòng đời BCG</th>
-            </tr></thead>
-            <tbody id="overviewGroupTable"></tbody>
-          </table>
-        </div>
-
-        <div class="section-title">
-          <div><h2>Cảnh báo nổi bật</h2><div class="desc">Xem chi tiết tại mục Cảnh báo &amp; công việc</div></div>
-          <button class="btn ghost sm" data-goto="canh-bao">Xem tất cả →</button>
-        </div>
-        <div id="overviewAlerts"></div>
-      </section>
-
-      <!-- ================= 2. KINH DOANH & TỒN KHO ================= -->
-      <section class="view" id="view-kd-ton-kho">
-        <div class="subtabs" id="kdSubtabs">
-          <button class="subtab active" data-sub="thang">Theo tháng</button>
-          <button class="subtab" data-sub="quy">Theo quý</button>
-          <button class="subtab" data-sub="ytd">Year to Date</button>
-          <button class="subtab" data-sub="kehoach">Tiến độ so với kế hoạch năm</button>
-          <button class="subtab" data-sub="nhom">Theo nhóm sản phẩm</button>
-        </div>
-
-        <div class="subview active" id="sub-thang">
-          <div class="card-head" style="margin-bottom:14px;">
-            <h3 style="font-size:13.5px; color:var(--ink-500); font-weight:600;">Chọn tháng xem chi tiết</h3>
-            <select id="monthPicker" style="border:1px solid var(--line-strong); border-radius:9px; padding:7px 12px; font:inherit; background:#fff;"></select>
-          </div>
-          <div class="grid grid-3" id="monthKpi"></div>
-          <div class="card" style="margin-top:16px;">
-            <div class="card-head"><h3>Doanh số &amp; tồn kho theo nhóm sản phẩm — tháng đã chọn</h3><span class="hint" id="editHintThang">Bật "Chế độ chỉnh sửa" để nhập số liệu thực tế</span></div>
-            <div class="table-wrap">
-              <table id="tableThang"><thead><tr>
-                <th>Nhóm sản phẩm</th><th class="num">Kế hoạch (chiếc)</th><th class="num">Thực tế (chiếc)</th>
-                <th>% đạt</th><th class="num">Doanh thu (tr đ)</th><th class="num">Tồn kho cuối kỳ</th><th class="num">Tồn kho mục tiêu</th>
-              </tr></thead><tbody></tbody></table>
-            </div>
-          </div>
-        </div>
-
-        <div class="subview" id="sub-quy">
-          <div class="grid grid-4" id="quarterKpi" style="margin-bottom:16px;"></div>
+        <div class="grid g-2" style="margin-top:18px;">
           <div class="card">
-            <div class="card-head"><h3>So sánh sản lượng theo quý</h3><span class="hint">Đơn vị: chiếc</span></div>
-            <div class="chart-box"><canvas id="chartQuarter"></canvas></div>
-          </div>
-        </div>
-
-        <div class="subview" id="sub-ytd">
-          <div class="two-col">
-            <div class="card"><div class="card-head"><h3>Lũy kế doanh thu từ đầu năm</h3><span class="hint" id="ytdLabel"></span></div>
-              <div class="chart-box"><canvas id="chartYTD"></canvas></div>
-            </div>
-            <div class="card"><div class="card-head"><h3>YTD theo nhóm sản phẩm</h3></div>
-              <div id="ytdGroupList"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="subview" id="sub-kehoach">
-          <div class="card" style="margin-bottom:16px;">
-            <div class="card-head"><h3>Tiến độ thực hiện kế hoạch năm 2026</h3><span class="hint">Toàn công ty</span></div>
-            <div class="chart-box"><canvas id="chartPlanProgress"></canvas></div>
-          </div>
-          <div class="table-wrap">
-            <table><thead><tr>
-              <th>Nhóm sản phẩm</th><th class="num">KH năm (tr đ)</th><th class="num">Thực hiện YTD (tr đ)</th>
-              <th>% hoàn thành</th><th class="num">Dự kiến cả năm (tr đ)</th><th>Khả năng đạt KH</th>
-            </tr></thead><tbody id="planTable"></tbody></table>
-          </div>
-        </div>
-
-        <div class="subview" id="sub-nhom">
-          <div class="grid grid-4" id="groupCardsGrid"></div>
-        </div>
-      </section>
-
-      <!-- ================= 3. DANH MỤC SẢN PHẨM (BCG) ================= -->
-      <section class="view" id="view-danh-muc">
-        <div class="card-head" style="margin-bottom:16px;">
-          <h3 style="font-size:13.5px; color:var(--ink-500); font-weight:600;">Lọc theo kênh</h3>
-          <select id="bcgChannelPicker" style="border:1px solid var(--line-strong); border-radius:9px; padding:7px 12px; font:inherit; background:#fff;">
-            <option value="all">Tất cả kênh</option>
-            <option value="GT">Kênh GT</option>
-            <option value="MT">Kênh MT</option>
-          </select>
-        </div>
-        <div class="grid grid-2" id="bcgQuadrants"></div>
-
-        <div class="section-title"><div><h2>Danh mục sản phẩm đầy đủ</h2><div class="desc">Trạng thái vòng đời &amp; vai trò từng SKU</div></div></div>
-        <div class="table-wrap">
-          <table><thead><tr>
-            <th>Mã hàng</th><th>Nhóm sản phẩm</th><th>Kênh</th><th>Vai trò</th><th>Vòng đời BCG</th><th class="num">Giá NY (đ)</th><th>Ghi chú</th>
-          </tr></thead><tbody id="portfolioTable"></tbody></table>
-        </div>
-      </section>
-
-      <!-- ================= 4. QUẢN TRỊ DỰ ÁN PTSPM ================= -->
-      <section class="view" id="view-ptsp">
-        <div class="grid grid-4" id="ptspKpi"></div>
-
-        <div class="section-title">
-          <div><h2>Danh sách dự án</h2><div class="desc">Bao gồm hàng OEM và tự sản xuất</div></div>
-          <div style="display:flex; gap:8px;">
-            <select id="ptspFilterType" style="border:1px solid var(--line-strong); border-radius:9px; padding:7px 10px; font:inherit; font-size:12.5px; background:#fff;">
-              <option value="all">Tất cả loại hàng</option><option value="OEM">OEM</option><option value="Tự sản xuất">Tự sản xuất</option>
-            </select>
-            <select id="ptspFilterGroup" style="border:1px solid var(--line-strong); border-radius:9px; padding:7px 10px; font:inherit; font-size:12.5px; background:#fff;">
-              <option value="all">Tất cả nhóm hàng</option>
-            </select>
-            <button class="btn primary sm" id="addProjectBtn">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-              Thêm dự án
-            </button>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table><thead><tr>
-            <th>Dự án</th><th>Nhóm hàng</th><th>Loại</th><th>Giai đoạn</th><th>Tiến độ</th>
-            <th>Dự kiến ra mắt</th><th>PIC</th><th>Trạng thái</th><th></th>
-          </tr></thead><tbody id="ptspTable"></tbody></table>
-        </div>
-      </section>
-
-      <!-- ================= 5. CẢNH BÁO & CÔNG VIỆC ================= -->
-      <section class="view" id="view-canh-bao">
-        <div class="two-col">
-          <div>
-            <div class="section-title" style="margin-top:0;"><div><h2>Cảnh báo hệ thống</h2><div class="desc">Tự động phát hiện từ dữ liệu kinh doanh &amp; dự án</div></div></div>
-            <div id="alertList"></div>
-          </div>
-          <div>
-            <div class="section-title" style="margin-top:0;"><div><h2>Việc cần làm</h2><div class="desc">Ghi chú công tác quản trị sản phẩm</div></div></div>
-            <div class="card">
-              <div style="display:flex; gap:8px; margin-bottom:14px;">
-                <input id="todoInput" placeholder="Thêm việc cần làm..." style="flex:1; border:1px solid var(--line-strong); border-radius:9px; padding:9px 11px; font:inherit; font-size:13px;">
-                <button class="btn primary sm" id="todoAddBtn">Thêm</button>
-              </div>
-              <div id="todoList"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= 6. CÀI ĐẶT KẾT NỐI ================= -->
-      <section class="view" id="view-cai-dat">
-        <div class="settings-form">
-          <div class="card" style="margin-bottom:16px;">
-            <div class="card-head"><h3>Kết nối Google Sheet qua Apps Script</h3></div>
-            <div class="field" style="margin-bottom:14px;">
-              <label>Web App URL (đã publish từ Google Apps Script)</label>
-              <input id="scriptUrlInput" placeholder="https://script.google.com/macros/s/XXXXX/exec">
-            </div>
-            <div style="display:flex; gap:10px;">
-              <button class="btn primary" id="testConnBtn">Kiểm tra kết nối</button>
-              <button class="btn" id="loadFromSheetBtn">Tải dữ liệu từ Sheet</button>
-            </div>
-            <div style="margin-top:16px;" class="help-box">
-              Mặc định dashboard chạy với <strong>dữ liệu mẫu</strong> để demo giao diện. Để lấy dữ liệu thật:<br>
-              1. Publish Apps Script (<code>Code.gs</code> đi kèm) dạng Web App, quyền <code>Anyone</code>.<br>
-              2. Dán URL <code>/exec</code> vào ô trên, hoặc điền cố định vào hằng số <code>APPS_SCRIPT_URL</code> ở đầu file trước khi đưa lên GitHub Pages.<br>
-              3. URL sẽ được lưu trong phiên làm việc hiện tại (không lưu trình duyệt) — dữ liệu thật luôn lấy từ Google Sheet mỗi khi tải trang hoặc bấm "Đồng bộ".
-            </div>
-          </div>
-          <div class="card" style="margin-bottom:16px;">
-            <div class="card-head"><h3>Phân quyền hiển thị</h3></div>
-            <div class="switch" id="editSwitch2" role="button" tabindex="0" style="margin-bottom:10px;">
-              <span>Cho phép chỉnh sửa số liệu (dành cho PM)</span><span class="switch-track"></span>
-            </div>
-            <div style="font-size:12.5px; color:var(--ink-500);">Tắt chế độ này khi trình chiếu cho lãnh đạo để tránh chỉnh sửa nhầm.</div>
+            <div class="card-head"><div class="card-title">Cơ cấu SKU theo Vai trò danh mục</div></div>
+            <div class="chart-box sm"><canvas id="chartOvRole"></canvas></div>
           </div>
           <div class="card">
-            <div class="card-head"><h3>Trạng thái đồng bộ</h3></div>
-            <div style="font-size:13px; color:var(--ink-700); display:flex; flex-direction:column; gap:6px;">
-              <div>Nguồn dữ liệu: <strong id="statusSource">Dữ liệu mẫu (demo)</strong></div>
-              <div>Lần đồng bộ gần nhất: <strong id="statusTime">—</strong></div>
-              <div>Số bản ghi đã tải: <strong id="statusCount" class="num">—</strong></div>
-            </div>
+            <div class="card-head"><div class="card-title">Tồn kho theo Ngành hàng (kỳ mới nhất)</div></div>
+            <div class="chart-box sm"><canvas id="chartOvStock"></canvas></div>
           </div>
         </div>
       </section>
 
-    </div>
-    <div class="footer-note">
-      <span>Livotec · Product Management Dashboard — nội bộ</span>
-      <span id="footYear"></span>
-    </div>
-  </div>
-</div>
-
-<div id="toast-container"></div>
-
-<!-- Modal thêm/sửa dự án PTSPM -->
-<div class="overlay" id="projectModalOverlay">
-  <div class="modal">
-    <div class="modal-head"><h3 id="projectModalTitle">Thêm dự án PTSPM</h3><button class="close-x" id="projectModalClose">✕</button></div>
-    <div class="modal-body">
-      <div class="field"><label>Tên dự án</label><input id="pf-name" placeholder="VD: Quạt đứng BLDC SB-618"></div>
-      <div class="field-row">
-        <div class="field"><label>Nhóm hàng</label><select id="pf-group"></select></div>
-        <div class="field"><label>Loại hàng</label><select id="pf-type"><option>Tự sản xuất</option><option>OEM</option></select></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Giai đoạn</label>
-          <select id="pf-stage">
-            <option>Ý tưởng</option><option>Thiết kế / Sourcing</option><option>Làm mẫu</option>
-            <option>Kiểm thử</option><option>Sản xuất loạt đầu</option><option>Ra mắt thị trường</option>
-          </select>
+      <!-- 2. KINH DOANH -->
+      <section class="section" id="sec-business">
+        <div class="filters">
+          <div class="tabs" id="bizPeriodTabs">
+            <div class="tab active" data-period="month">Theo tháng</div>
+            <div class="tab" data-period="quarter">Theo quý</div>
+            <div class="tab" data-period="ytd">YTD</div>
+          </div>
+          <div class="grp">Kỳ: <select id="bizPeriodSelect"></select></div>
+          <div class="grp">Ngành hàng: <select id="bizIndustry"><option value="all">Tất cả</option></select></div>
+          <div class="grp">Nhóm SP: <select id="bizGroup"><option value="all">Tất cả</option></select></div>
+          <div class="grp">Kênh bán: <select id="bizChannel"><option value="all">Tất cả</option></select></div>
+          <div class="grp">Phân khúc: <select id="bizSegment"><option value="all">Tất cả</option></select></div>
         </div>
-        <div class="field"><label>Tiến độ (%)</label><input id="pf-progress" type="number" min="0" max="100" value="10"></div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label>Dự kiến ra mắt</label><input id="pf-launch" type="month"></div>
-        <div class="field"><label>PIC phụ trách</label><input id="pf-pic" placeholder="Tên PM/PIC"></div>
-      </div>
-      <div class="field"><label>Trạng thái</label>
-        <select id="pf-status"><option>Đúng tiến độ</option><option>Rủi ro</option><option>Chậm tiến độ</option><option>Hoàn thành</option></select>
-      </div>
-      <div class="field"><label>Ghi chú</label><textarea id="pf-note" rows="2" placeholder="Ghi chú thêm..."></textarea></div>
+        <div class="grid g-4">
+          <div class="card kpi"><div class="kpi-label">Doanh thu KH / TT</div><div class="kpi-value" id="bzRev">—</div><div class="kpi-delta up" id="bzRevD">—</div></div>
+          <div class="card kpi"><div class="kpi-label">Sản lượng KH / TT</div><div class="kpi-value" id="bzVol">—</div><div class="kpi-delta up" id="bzVolD">—</div></div>
+          <div class="card kpi"><div class="kpi-label">ASP thực tế</div><div class="kpi-value" id="bzAsp">—</div><div class="kpi-delta up" id="bzAspD">Doanh thu TT / Sản lượng TT</div></div>
+          <div class="card kpi"><div class="kpi-label">% đạt kế hoạch (DT)</div><div class="kpi-value" id="bzAch">—</div><div class="kpi-delta up" id="bzAchD">so với kế hoạch kỳ</div></div>
+        </div>
+        <div class="grid g-2" style="margin-top:18px;">
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">Kế hoạch vs Thực tế theo kỳ</div></div></div>
+            <div class="chart-box"><canvas id="chartBizPlanActual"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><div class="card-title">ASP thực tế theo Phân khúc</div><div class="card-sub">Theo dõi phân khúc nào đang lệch khỏi định vị giá</div></div></div>
+            <div class="chart-box"><canvas id="chartAspSegment"></canvas></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:18px;">
+          <div class="card-head"><div><div class="card-title">Chi tiết theo SKU</div><div class="card-sub">Trong kỳ đã chọn ở trên</div></div></div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>SKU</th><th>Model</th><th>Ngành hàng</th><th>Kênh</th><th>Phân khúc</th>
+              <th class="right">DT kế hoạch</th><th class="right">DT thực tế</th><th class="right">% DT</th>
+              <th class="right">SL kế hoạch</th><th class="right">SL thực tế</th><th class="right">% SL</th><th class="right">ASP TT</th></tr></thead>
+            <tbody id="bizTableBody"></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- 3. TỒN KHO -->
+      <section class="section" id="sec-inventory">
+        <div class="filters">
+          <div class="grp">Kỳ: <select id="invPeriodSelect"></select></div>
+          <div class="grp">Kênh bán: <select id="invChannel"><option value="all">Tất cả</option></select></div>
+          <div class="grp">Ngành hàng: <select id="invIndustry"><option value="all">Tất cả</option></select></div>
+        </div>
+        <div class="grid g-4">
+          <div class="card kpi"><div class="kpi-label">Tổng tồn cuối kỳ</div><div class="kpi-value" id="invClose">—</div><div class="kpi-delta up" id="invCloseD">—</div></div>
+          <div class="card kpi"><div class="kpi-label">Tổng biến động tồn kho</div><div class="kpi-value" id="invDelta">—</div><div class="kpi-delta up" id="invDeltaD">so với đầu kỳ</div></div>
+          <div class="card kpi"><div class="kpi-label">SKU thiếu hàng (DOS &lt; 3 tuần)</div><div class="kpi-value" id="invLow" style="color:var(--red-500)">—</div></div>
+          <div class="card kpi"><div class="kpi-label">SKU dư tồn (DOS &gt; 10 tuần)</div><div class="kpi-value" id="invHigh" style="color:var(--amber-500)">—</div></div>
+        </div>
+        <div class="card" style="margin-top:18px;">
+          <div class="card-head"><div><div class="card-title">Tồn kho theo Ngành hàng qua các tháng</div></div></div>
+          <div class="chart-box"><canvas id="chartInvTrend"></canvas></div>
+        </div>
+        <div class="card" style="margin-top:18px;">
+          <div class="card-head"><div><div class="card-title">Rollforward tồn kho theo SKU × Kênh</div><div class="card-sub">DOS ước tính theo tốc độ bán trung bình 4 tuần gần nhất (dựa trên tháng gần nhất có dữ liệu)</div></div></div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>SKU</th><th>Model</th><th>Ngành hàng</th><th>Kênh</th>
+              <th class="right">Tồn đầu kỳ</th><th class="right">Bán TT</th><th class="right">Tồn cuối kỳ</th><th class="right">Biến động</th><th class="right">DOS (tuần)</th><th>Cảnh báo</th></tr></thead>
+            <tbody id="invTableBody"></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- 4. DANH MỤC SẢN PHẨM -->
+      <section class="section" id="sec-portfolio">
+        <div class="filters">
+          <div class="grp">Loại sản phẩm: <select id="pfType"><option value="all">Tất cả</option></select></div>
+          <div class="grp">Vòng đời: <select id="pfLifecycle">
+              <option value="all">Tất cả</option>
+              <option value="kinhdoanh">Đang kinh doanh (Đang bán / Chuẩn bị bán)</option>
+              <option value="phattrien">Đang phát triển</option>
+              <option value="ngung">Ngừng bán</option>
+            </select></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><div class="card-title">Ma trận Vai trò danh mục × Phân khúc</div><div class="card-sub">Số lượng SKU — bấm vào ô để lọc bảng bên dưới</div></div></div>
+          <div class="table-wrap" style="max-height:none;"><table class="matrix" id="pfMatrix"></table></div>
+        </div>
+        <div class="card" style="margin-top:18px;">
+          <div class="card-head"><div><div class="card-title">Danh sách SKU</div><div class="card-sub">SKU đang phát triển có Project_ID liên kết — bấm để mở đúng dự án ở tab Dự án PTSPM</div></div></div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>SKU</th><th>Model</th><th>Ngành hàng</th><th>Nhóm SP</th><th>Phân khúc</th><th>Vai trò</th><th>Loại SP</th><th>Vòng đời</th><th>Dự án liên kết</th></tr></thead>
+            <tbody id="pfTableBody"></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- 5. DỰ ÁN PTSPM -->
+      <section class="section" id="sec-projects">
+        <div class="filters">
+          <div class="grp">Kênh bán: <select id="pjChannel"><option value="all">Tất cả</option></select></div>
+          <div class="grp">Nguồn SP: <select id="pjSource"><option value="all">Tất cả</option></select></div>
+          <div class="grp">Trạng thái: <select id="pjStatus"><option value="all">Tất cả</option></select></div>
+          <div class="grp">Nhóm SP: <select id="pjGroup"><option value="all">Tất cả</option></select></div>
+        </div>
+        <div class="grid g-4" style="margin-bottom:18px;">
+          <div class="card kpi"><div class="kpi-label">Dự án đang phát triển</div><div class="kpi-value" id="pjTotal">—</div></div>
+          <div class="card kpi"><div class="kpi-label">On track</div><div class="kpi-value" id="pjOn" style="color:var(--mint-700)">—</div></div>
+          <div class="card kpi"><div class="kpi-label">Delayed / Watch</div><div class="kpi-value" id="pjRisk" style="color:var(--red-500)">—</div></div>
+          <div class="card kpi"><div class="kpi-label">Đã ra mắt (kỳ này)</div><div class="kpi-value" id="pjDone" style="color:var(--mint-700)">—</div></div>
+        </div>
+
+        <div class="card" id="pfHighlightCard" style="display:none;margin-bottom:18px;background:var(--mint-50);border-color:var(--mint-300);">
+          <div class="card-title" style="color:var(--mint-800);">🔗 Đang lọc theo SKU được chọn từ Danh mục sản phẩm — <span id="pfHighlightText"></span> <button class="btn sm" id="clearHighlight" style="margin-left:10px;">Bỏ lọc</button></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div><div class="card-title">Kanban theo 12 giai đoạn sản phẩm mới</div></div></div>
+          <div class="kanban" id="kanbanBoard"></div>
+        </div>
+
+        <div class="card" id="exceptionLane" style="margin-top:14px;">
+          <div class="card-head"><div><div class="card-title">Ngoại lệ — Tạm dừng / Hủy dự án</div></div></div>
+          <div class="kanban" id="kanbanException"></div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <div class="card-head"><div><div class="card-title">Độ lệch tiến độ ra mắt</div><div class="card-sub">Trễ dự kiến = Ngày cập nhật − Ngày kế hoạch · Trễ thực tế = Ngày thực tế − Ngày kế hoạch (chỉ tính khi đã ra mắt)</div></div></div>
+          <div class="chart-box lg"><canvas id="chartDelay"></canvas></div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <div class="card-head">
+            <div><div class="card-title">Nhật ký cập nhật dự án</div><div class="card-sub">Sắp xếp theo Ngày cập nhật giảm dần</div></div>
+            <div style="display:flex;gap:8px;">
+              <select id="pjLogPM"><option value="all">Tất cả PM</option></select>
+              <select id="pjLogUnit"><option value="all">Tất cả đơn vị</option></select>
+            </div>
+          </div>
+          <div id="pjLog"></div>
+        </div>
+      </section>
+
+      <!-- 6. CẢNH BÁO -->
+      <section class="section" id="sec-alerts">
+        <div class="grid g-3" style="margin-bottom:18px;">
+          <div class="card kpi"><div class="kpi-label">Tồn kho cần chú ý</div><div class="kpi-value" id="alInv">—</div></div>
+          <div class="card kpi"><div class="kpi-label">Dự án trễ / sắp đến hạn (30 ngày)</div><div class="kpi-value" id="alDue">—</div></div>
+          <div class="card kpi"><div class="kpi-label">SKU dưới KH 2 tháng liên tiếp</div><div class="kpi-value" id="alPlan">—</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Danh sách việc cần xử lý</div></div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Mức độ</th><th>Nội dung</th><th>Đối tượng</th><th>Đề xuất xử lý</th></tr></thead>
+            <tbody id="alertsBody"></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- 7. HIỆU SUẤT PM -->
+      <section class="section" id="sec-pmperf">
+        <div class="grid g-2">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Số dự án theo Product Manager</div></div>
+            <div class="chart-box"><canvas id="chartPmCount"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Tỷ lệ đúng hạn theo PM</div><div class="card-sub">Ngày ra mắt thực tế ≤ Ngày ra mắt kế hoạch</div></div>
+            <div class="chart-box"><canvas id="chartPmOnTime"></canvas></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:18px;">
+          <div class="card-head"><div class="card-title">Bảng chi tiết theo PM</div></div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Product Manager</th><th class="right">Tổng dự án</th><th class="right">Đã ra mắt</th><th class="right">Đúng hạn</th><th class="right">% đúng hạn</th><th>Critical</th><th>High</th><th>Medium</th><th>Low</th></tr></thead>
+            <tbody id="pmTableBody"></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- 8. DATA QA -->
+      <section class="section" id="sec-dataqa">
+        <div id="qaChecks"></div>
+        <div class="card" style="margin-top:8px;">
+          <div class="card-head"><div class="card-title">Chi tiết bản ghi cần rà soát</div></div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Loại lỗi</th><th>Sheet</th><th>Chi tiết</th></tr></thead>
+            <tbody id="qaTableBody"></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="section" id="sec-settings">
+        <div class="card" style="max-width:820px;">
+          <div class="card-head"><div class="card-title">Kết nối Google Apps Script Web App</div></div>
+          <div class="settings-row">
+            <label>Web App URL</label>
+            <input type="text" id="sheetUrlInput">
+            <div class="hint">URL mặc định đã trỏ tới deployment hiện tại. Có thể thay bằng deployment khác nếu cần.</div>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn primary" id="saveUrlBtn">Lưu &amp; kết nối lại</button>
+            <button class="btn" id="testConnBtn">Kiểm tra kết nối</button>
+          </div>
+        </div>
+        <div class="card" style="max-width:820px;margin-top:18px;">
+          <div class="card-head"><div class="card-title">Trạng thái đồng bộ</div></div>
+          <p style="font-size:14px;color:var(--ink-700);">Lần đồng bộ gần nhất: <b id="lastSyncText">—</b></p>
+          <p style="font-size:14px;color:var(--ink-700);">Số dòng đã tải: <span id="rowCounts">—</span></p>
+        </div>
+      </section>
+
     </div>
-    <div class="modal-foot">
-      <button class="btn" id="projectDeleteBtn" style="color:var(--kill); display:none;">Xóa dự án</button>
-      <button class="btn" id="projectCancelBtn">Hủy</button>
-      <button class="btn primary" id="projectSaveBtn">Lưu &amp; ghi vào Sheet</button>
-    </div>
-  </div>
+  </main>
 </div>
+
+<div class="toast-wrap" id="toastWrap"></div>
 
 <script>
 /* =========================================================================
-   LIVOTEC PRODUCT MANAGEMENT DASHBOARD
-   - Chạy độc lập với dữ liệu mẫu (demo).
-   - Khi có APPS_SCRIPT_URL hợp lệ, dữ liệu được tải/ghi qua Google Apps Script
-     Web App (xem file Code.gs đi kèm) — đóng vai trò API đọc/ghi Google Sheet.
+   LIVOTEC PRODUCT MANAGEMENT DASHBOARD — v2
+   Data source: Google Apps Script Web App (doGet ?action=getAll)
+   Sheets: 01_PRODUCT_MASTER, 02_SALES_MONTHLY, 03_INVENTORY_MONTHLY, 04_PRODUCT_PROJECT
    ========================================================================= */
 
-// Điền cố định URL Apps Script tại đây trước khi publish lên GitHub Pages
-// (hoặc để trống và nhập tại màn hình "Cài đặt kết nối").
-const APPS_SCRIPT_URL_DEFAULT = "";
+const DEPLOY_ID = "AKfycbymDT7xruWCUizEmKraiKg-MbruVoca2NHT7zcQL19wP6b8CrApEv9FnhQrF1jnSdDd";
+const CONFIG = { webAppUrl: `https://script.google.com/macros/s/${DEPLOY_ID}/exec`, lastSync: null, connected:false };
 
-/* ---------------------------- ICONS (inline svg) ---------------------------- */
-const ICONS = {
-  overview:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
-  sales:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>',
-  portfolio:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>',
-  project:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>',
-  alert:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>',
-  settings:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>',
-  box:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8L12 3 3 8l9 5 9-5Z"/><path d="M3 8v9l9 5 9-5V8"/><path d="M12 13v9"/></svg>',
-  trend:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>',
-  trendDown:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M3 7l6 6 4-4 8 8"/><path d="M15 17h6v-6"/></svg>',
+// ---- Field-name maps (must match the Vietnamese headers exactly) ----
+const F  = {pid:'Product_ID',model:'Model',name:'Tên sản phẩm',industry:'Ngành hàng',group:'Nhóm sản phẩm',segment:'Phân khúc',ptype:'Loại sản phẩm',role:'Vai trò danh mục',lifecycle:'Trạng thái vòng đời',planLaunch:'Ngày ra mắt kế hoạch',actualLaunch:'Ngày ra mắt thực tế',channel:'Kênh bán',pm:'Product Manager',projectId:'Project_ID',updated:'Ngày cập nhật',note:'Ghi chú'};
+const SF = {period:'Period',pid:'Product_ID',model:'Model',industry:'Ngành hàng',group:'Nhóm sản phẩm',channel:'Kênh bán',planRev:'Doanh thu kế hoạch',actRev:'Doanh thu thực tế',planVol:'Sản lượng kế hoạch',actVol:'Sản lượng thực tế',updated:'Ngày cập nhật',note:'Ghi chú'};
+const IVF= {period:'Period',pid:'Product_ID',model:'Model',industry:'Ngành hàng',group:'Nhóm sản phẩm',channel:'Kênh bán',open:'Tồn đầu kỳ',soldActual:'Sản lượng bán thực tế',close:'Tồn cuối kỳ',delta:'Biến động tồn kho',updated:'Ngày cập nhật',note:'Ghi chú'};
+const PF_ = {projectId:'Project_ID',pid:'Product_ID',name:'Tên dự án',industry:'Ngành hàng',group:'Nhóm sản phẩm',ptype:'Loại dự án',source:'Nguồn sản phẩm',pm:'Product Manager',unit:'Đơn vị phối hợp',stage:'Giai đoạn hiện tại',status:'Trạng thái',pct:'Tiến độ %',start:'Ngày bắt đầu',planLaunch:'Ngày ra mắt kế hoạch',updatedLaunch:'Ngày ra mắt cập nhật',actualLaunch:'Ngày ra mắt thực tế',priority:'Mức độ ưu tiên',done:'Kết quả đã hoàn thành',doing:'Công việc đang thực hiện',next:'Công việc tiếp theo',updated:'Ngày cập nhật',note:'Ghi chú'};
+
+const STAGES_12 = ["Ý tưởng sản phẩm","Nghiên cứu thị trường","Phê duyệt concept","Chốt yêu cầu sản phẩm","Thiết kế và phát triển","Làm mẫu","Kiểm thử","Chứng nhận","Sản xuất thử","Sản xuất hàng loạt","Chuẩn bị ra mắt","Đã ra mắt"];
+const STAGES_EXC = ["Tạm dừng","Hủy dự án"];
+const SEGMENTS = ["Entry","Core","Better","Premium"];
+const ROLES = ["Mở giá","Chủ lực","Hero","Fighting","Hình ảnh"];
+const PRIORITIES = ["Critical","High","Medium","Low"];
+
+let DB = { master:[], sales:[], inventory:[], project:[] };
+let IDX = {}; // precomputed indices
+let state = {
+  ovPeriod:"month", ovIdx:0,
+  bizPeriod:"month", bizIdx:0, bizIndustry:"all", bizGroup:"all", bizChannel:"all", bizSegment:"all",
+  invIdx:0, invChannel:"all", invIndustry:"all",
+  pfType:"all", pfLifecycle:"all", pfSelectedRole:null, pfSelectedSeg:null,
+  pjChannel:"all", pjSource:"all", pjStatus:"all", pjGroup:"all", pjHighlightPid:null,
+  pjLogPM:"all", pjLogUnit:"all",
 };
 
-/* ---------------------------- PRODUCT GROUPS ---------------------------- */
-const GROUPS = [
-  {key:'quat',   name:'Quạt điện',        emoji:'🌀', color:'#12977A', avgPrice:0.85, seasonal:'summer'},
-  {key:'beptu',  name:'Bếp từ',           emoji:'🍳', color:'#3E76D6', avgPrice:3.1,  seasonal:'flat'},
-  {key:'noicom', name:'Nồi cơm điện',     emoji:'🍚', color:'#DE9A2E', avgPrice:0.62, seasonal:'flat'},
-  {key:'binhnn', name:'Bình nước nóng',   emoji:'🚿', color:'#D65B5B', avgPrice:2.45, seasonal:'winter'},
-  {key:'suoi',   name:'Máy sưởi',         emoji:'🔥', color:'#A85CDB', avgPrice:0.95, seasonal:'winter'},
-  {key:'hutam',  name:'Máy hút ẩm',       emoji:'💧', color:'#1FB0C9', avgPrice:4.2,  seasonal:'summer'},
-  {key:'hutmui', name:'Máy hút mùi',      emoji:'🍽️', color:'#7A8F3C', avgPrice:3.6,  seasonal:'flat'},
-  {key:'hutbui', name:'Máy hút bụi',      emoji:'🧹', color:'#C77B3E', avgPrice:1.55, seasonal:'flat'},
-];
-const MONTH_NAMES = ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'];
-const CURRENT_MONTH = 7; // Tháng 7/2026 - dữ liệu YTD tính đủ đến hết T6, T7 đang chạy
+/* ---------------------------- HELPERS ---------------------------------- */
+function fmt(n){ if(n===null||n===undefined||isNaN(n)) return "—"; return new Intl.NumberFormat('vi-VN').format(Math.round(n)); }
+function fmtVND(n){ if(n===null||n===undefined||isNaN(n)) return "—"; return new Intl.NumberFormat('vi-VN').format(Math.round(n))+" đ"; }
+function pct(n){ if(n===null||n===undefined||!isFinite(n)) return "—"; return (n*100).toFixed(0)+"%"; }
+function safeDiv(a,b){ return b ? a/b : 0; }
 
-/* ---------------------------- SEEDED RANDOM (mock data) ---------------------------- */
-function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function parsePeriod(p){
+  if(!p) return null;
+  let s = String(p);
+  if(s.includes("T")) s = s.slice(0,10); // Date-like ISO -> take yyyy-mm-dd then derive month
+  const m = s.match(/(\d{4})-(\d{2})/);
+  if(!m) return null;
+  return { year:+m[1], month:+m[2], key:`${m[1]}-${m[2]}` };
+}
+function parseDateVal(v){
+  if(!v) return null;
+  let s = String(v);
+  if(s.includes("T")) s = s.slice(0,10);
+  const d = new Date(s+"T00:00:00");
+  return isNaN(d.getTime()) ? null : d;
+}
+function daysBetween(a,b){ if(!a||!b) return null; return Math.round((b-a)/86400000); }
+function fmtDate(v){ const d = parseDateVal(v); return d ? d.toISOString().slice(0,10) : "—"; }
 
-function seasonalFactor(type, month){
-  // month 1-12
-  if(type==='summer'){ const peak=[0.7,0.75,0.9,1.15,1.35,1.5,1.55,1.4,1.1,0.85,0.7,0.65]; return peak[month-1]; }
-  if(type==='winter'){ const peak=[1.5,1.3,0.95,0.7,0.6,0.55,0.5,0.55,0.65,0.9,1.25,1.55]; return peak[month-1]; }
-  return 1.0 + Math.sin(month/12*Math.PI*2)*0.06;
+function toast(msg, kind="ok"){
+  const wrap = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = "toast " + kind;
+  el.innerHTML = msg;
+  wrap.appendChild(el);
+  setTimeout(()=>{ el.style.opacity=0; el.style.transition="opacity .3s"; setTimeout(()=>el.remove(),300); }, 2600);
+}
+function uniqueSorted(arr){ return [...new Set(arr.filter(v=>v!==undefined && v!==null && v!==""))].sort(); }
+function fillSelect(sel, values, keepFirst=true){
+  const cur = sel.value;
+  const first = keepFirst ? sel.querySelector('option') : null;
+  sel.innerHTML = "";
+  if(first) sel.appendChild(first);
+  values.forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o); });
+  if([...sel.options].some(o=>o.value===cur)) sel.value = cur;
 }
 
-function generateMockData(){
-  const rnd = mulberry32(20260715);
-  const groupsData = {};
-  GROUPS.forEach((g,gi)=>{
-    const baseUnits = 900 + gi*140; // đơn vị/tháng cơ sở
-    const months = [];
-    for(let m=1;m<=12;m++){
-      const seasonal = seasonalFactor(g.seasonal, m);
-      const target = Math.round(baseUnits * seasonal * (0.95+rnd()*0.1));
-      let actual;
-      if(m < CURRENT_MONTH){
-        actual = Math.round(target * (0.82 + rnd()*0.32));
-      } else if(m === CURRENT_MONTH){
-        actual = Math.round(target * (0.35 + rnd()*0.25)); // tháng đang chạy, mới đạt 1 phần
-      } else {
-        actual = null; // chưa tới
-      }
-      const revenue = actual!=null ? Math.round(actual * g.avgPrice) : null; // triệu đồng
-      const targetRevenue = Math.round(target * g.avgPrice);
-      const invTarget = Math.round(baseUnits * 1.6);
-      const invActual = actual!=null ? Math.round(invTarget * (0.55 + rnd()*0.85)) : invTarget;
-      months.push({month:m, target, actual, revenue, targetRevenue, invTarget, invActual});
+/* ------------------------------- MOCK DATA ------------------------------
+   Used only if the live Web App cannot be reached (offline preview / CORS).
+------------------------------------------------------------------------- */
+function generateMock(){
+  const PMS = ["Nguyễn Minh Anh","Trần Bảo Long","Lê Thu Hà","Phạm Quốc Bảo"];
+  const UNITS = ["R&D nội bộ","Nhà máy Bình Dương","Đối tác OEM Trung Quốc","Phòng Marketing"];
+  const CATS = {
+    "Quạt điện":{groups:["Quạt đứng","Quạt treo tường","Quạt sàn","Quạt BLDC"], prefix:{"Quạt đứng":"S","Quạt treo tường":"W","Quạt sàn":"FT","Quạt BLDC":"SB"}, channels:["GT","MT","Online"]},
+    "Máy lọc nước":{groups:["RO gia đình","Nóng lạnh"], prefix:{"RO gia đình":"RO","Nóng lạnh":"NL"}, channels:["GT","MT"]},
+  };
+  const seedRand = (()=>{ let s=42; return ()=>{ s=(s*9301+49297)%233280; return s/233280; }; })();
+  const master=[], sales=[], inventory=[], project=[];
+  const PTYPE=["Sản xuất trong nước","OEM","Nhập khẩu"];
+  const LIFE = ["Đang bán","Đang bán","Đang bán","Chuẩn bị bán","Đang phát triển","Ngừng bán"];
+  let projCounter=0;
+  const N=24;
+  for(let i=0;i<N;i++){
+    const pid = `SPX${(i+1).toString().padStart(3,'0')}`;
+    const cat = i%3===0 ? "Máy lọc nước" : "Quạt điện";
+    const info = CATS[cat];
+    const group = info.groups[i%info.groups.length];
+    const model = `${info.prefix[group]}-${100+i}`;
+    const seg = SEGMENTS[i%4];
+    const role = ROLES[i%5];
+    const life = LIFE[i%LIFE.length];
+    const pm = PMS[i%PMS.length];
+    const channel = info.channels[i%info.channels.length];
+    let projectId = "";
+    const rec = {[F.pid]:pid,[F.model]:model,[F.name]:`Livotec ${model}`,[F.industry]:cat,[F.group]:group,[F.segment]:seg,[F.ptype]:PTYPE[i%3],[F.role]:role,[F.lifecycle]:life,[F.channel]:channel,[F.pm]:pm,[F.updated]:"2026-07-15",[F.note]:""};
+    if(life==="Đang bán" || life==="Ngừng bán"){
+      rec[F.planLaunch]="2025-09-01"; rec[F.actualLaunch]="2025-09-05";
+    } else {
+      projCounter++;
+      const pjid = `PJX${projCounter.toString().padStart(2,'0')}`;
+      projectId = pjid;
+      rec[F.planLaunch]="2026-10-01"; rec[F.actualLaunch]="";
+      const stage = life==="Chuẩn bị bán" ? STAGES_12[9+ (i%3)] : STAGES_12[i%9];
+      const pct_ = life==="Chuẩn bị bán" ? 80+i%15 : 10+i%60;
+      const status = ["On track","Watch","Delayed"][i%3];
+      project.push({[PF_.projectId]:pjid,[PF_.pid]:pid,[PF_.name]:`Phát triển ${model}`,[PF_.industry]:cat,[PF_.group]:group,[PF_.ptype]:"Sản phẩm mới",[PF_.source]:"Tự sản xuất",[PF_.pm]:pm,[PF_.unit]:UNITS[i%4],[PF_.stage]:stage,[PF_.status]:status,[PF_.pct]:pct_/100,[PF_.start]:"2026-05-01",[PF_.planLaunch]:"2026-10-01",[PF_.updatedLaunch]:"2026-10-15",[PF_.actualLaunch]:stage==="Đã ra mắt" ? "2026-10-12":"",[PF_.priority]:PRIORITIES[i%4],[PF_.done]:"Đã hoàn thành khảo sát nhu cầu và chốt yêu cầu sản phẩm.",[PF_.doing]:`Đang thực hiện ${stage.toLowerCase()}.`,[PF_.next]:"Chuyển giai đoạn tiếp theo trong tháng tới.",[PF_.updated]:`2026-07-${(10+i%15)}`,[PF_.note]:""});
     }
-    groupsData[g.key] = {months};
-  });
-  return groupsData;
-}
+    rec[F.projectId]=projectId;
+    master.push(rec);
 
-const PORTFOLIO = [
-  {sku:'SB-614', group:'quat', channel:'GT', role:'Family comfort / phòng ngủ', stage:'star', price:1690000, note:'BLDC, 7 cánh, 12 mức gió, Sleepy'},
-  {sku:'SB-616', group:'quat', channel:'GT', role:'Hero / sản lượng / phòng rộng', stage:'grow', price:2190000, note:'BLDC 16 inch, mát mạnh'},
-  {sku:'WB-614', group:'quat', channel:'GT', role:'Treo tường / nhà nhỏ', stage:'grow', price:1390000, note:'Space-saving, BLDC'},
-  {sku:'S-300',  group:'quat', channel:'MT', role:'Chào mới / phòng rộng', stage:'grow', price:1490000, note:'AC, remote, hẹn giờ'},
-  {sku:'S-420',  group:'quat', channel:'MT', role:'Phân khúc cao cấp', stage:'grow', price:2585000, note:'Kiểu dáng sang, đẹp'},
-  {sku:'W-150',  group:'quat', channel:'MT', role:'Treo tường phổ thông', stage:'grow', price:1250000, note:'Nút vặn + dây kéo'},
-  {sku:'W-450',  group:'quat', channel:'MT', role:'Treo tường có remote', stage:'grow', price:1450000, note:'Remote + hẹn giờ'},
-  {sku:'S-150B', group:'quat', channel:'GT', role:'Thay thế S-100', stage:'grow', price:0, note:'Động cơ đồng 100%'},
-  {sku:'S-350',  group:'quat', channel:'GT', role:'Thay thế S-200', stage:'grow', price:0, note:'Màn hình LED cảm ứng'},
-  {sku:'S-200',  group:'quat', channel:'GT', role:'Khuyến mãi tặng kèm', stage:'milk', price:0, note:'Tặng kèm máy lọc nước'},
-  {sku:'S-100',  group:'quat', channel:'GT', role:'Khuyến mãi tặng kèm', stage:'milk', price:0, note:'Tặng kèm máy lọc nước'},
-  {sku:'FT-16/18', group:'quat', channel:'GT', role:'Quạt sàn phổ thông', stage:'kill', price:0, note:'Ngừng đầu tư truyền thông'},
-  {sku:'BT-P200', group:'beptu', channel:'MT', role:'Hero bếp đôi cảm ứng', stage:'star', price:2890000, note:'2 vùng nấu, cảm ứng'},
-  {sku:'BT-P100', group:'beptu', channel:'GT', role:'Phổ thông sản lượng', stage:'grow', price:1290000, note:'1 vùng nấu, phím bấm'},
-  {sku:'NC-1L8',  group:'noicom', channel:'GT', role:'Volume driver', stage:'grow', price:590000, note:'1.8L, nắp gài'},
-  {sku:'NC-CAO', group:'noicom', channel:'MT', role:'Cao tần, phân khúc trên', stage:'star', price:1690000, note:'Cao tần, lòng nồi 3D'},
-  {sku:'BNN-20L', group:'binhnn', channel:'MT', role:'Trực tiếp, gia đình nhỏ', stage:'grow', price:2390000, note:'20L, chống giật'},
-  {sku:'BNN-30L', group:'binhnn', channel:'MT', role:'Hero mùa lạnh', stage:'star', price:3190000, note:'30L, hiển thị nhiệt độ'},
-  {sku:'SUOI-G2', group:'suoi', channel:'GT', role:'Sưởi gốm 2 chế độ', stage:'grow', price:790000, note:'An toàn cho trẻ nhỏ'},
-  {sku:'HA-12L', group:'hutam', channel:'MT', role:'Hero hút ẩm gia đình', stage:'star', price:4590000, note:'12L/ngày, cảm biến ẩm'},
-  {sku:'HM-70', group:'hutmui', channel:'MT', role:'Áp trần, phổ thông', stage:'grow', price:2990000, note:'Lọc than hoạt tính'},
-  {sku:'HB-CB2', group:'hutbui', channel:'GT', role:'Không dây, cầm tay', stage:'grow', price:1590000, note:'Pin lithium, nhẹ'},
-];
-
-const PROJECTS = [
-  {id:1, name:'Quạt đứng BLDC SB-618 (kế nhiệm SB-616)', group:'quat', type:'Tự sản xuất', stage:'Làm mẫu', progress:55, launch:'2026-09', pic:'Nguyễn A. Tùng', status:'Đúng tiến độ', note:'Chờ mẫu cánh 16 inch phiên bản 2'},
-  {id:2, name:'Quạt treo tường WB-620 mini', group:'quat', type:'OEM', stage:'Thiết kế / Sourcing', progress:30, launch:'2026-11', pic:'Lê Thu Hà', status:'Đúng tiến độ', note:'Đối tác OEM Quảng Đông'},
-  {id:3, name:'Bếp từ đôi BT-P210 cảm ứng vân đá', group:'beptu', type:'OEM', stage:'Kiểm thử', progress:72, launch:'2026-08', pic:'Trần Minh Khoa', status:'Rủi ro', note:'Chậm linh kiện cảm ứng 2 tuần'},
-  {id:4, name:'Nồi cơm cao tần NC-CAO2 dung tích lớn', group:'noicom', type:'Tự sản xuất', stage:'Sản xuất loạt đầu', progress:88, launch:'2026-08', pic:'Phạm Đức Anh', status:'Đúng tiến độ', note:''},
-  {id:5, name:'Bình nước nóng BNN-30L bản inverter', group:'binhnn', type:'OEM', stage:'Ý tưởng', progress:8, launch:'2027-02', pic:'Ngô Bảo Trâm', status:'Đúng tiến độ', note:'Đang xin báo giá 3 nhà máy'},
-  {id:6, name:'Máy sưởi gốm SUOI-G3 remote', group:'suoi', type:'Tự sản xuất', stage:'Kiểm thử', progress:64, launch:'2026-10', pic:'Nguyễn A. Tùng', status:'Đúng tiến độ', note:''},
-  {id:7, name:'Máy hút ẩm HA-16L công suất lớn', group:'hutam', type:'OEM', stage:'Sản xuất loạt đầu', progress:91, launch:'2026-08', pic:'Lê Thu Hà', status:'Đúng tiến độ', note:'Sắp ra mắt đúng mùa nồm miền Bắc'},
-  {id:8, name:'Máy hút mùi âm tủ HM-90', group:'hutmui', type:'OEM', stage:'Thiết kế / Sourcing', progress:22, launch:'2027-01', pic:'Trần Minh Khoa', status:'Chậm tiến độ', note:'Đối tác chưa chốt khuôn mẫu'},
-  {id:9, name:'Máy hút bụi lau nhà HB-CB3', group:'hutbui', type:'Tự sản xuất', stage:'Làm mẫu', progress:40, launch:'2026-12', pic:'Phạm Đức Anh', status:'Đúng tiến độ', note:''},
-  {id:10, name:'Quạt cây BLDC SB-614 Pro (nâng cấp remote màn hình)', group:'quat', type:'Tự sản xuất', stage:'Ý tưởng', progress:12, launch:'2027-03', pic:'Ngô Bảo Trâm', status:'Đúng tiến độ', note:''},
-  {id:11, name:'Bếp từ đơn du lịch mini BT-P50', group:'beptu', type:'OEM', stage:'Ra mắt thị trường', progress:100, launch:'2026-06', pic:'Lê Thu Hà', status:'Hoàn thành', note:'Đã sell-in GT tháng 6'},
-  {id:12, name:'Nồi chiên không dầu NCKD-45 (mở rộng ngành hàng mới)', group:'noicom', type:'OEM', stage:'Thiết kế / Sourcing', progress:18, launch:'2027-01', pic:'Trần Minh Khoa', status:'Rủi ro', note:'Đang đánh giá 2 nhà máy OEM'},
-  {id:13, name:'Bình nước nóng BNN-15L phòng trọ', group:'binhnn', type:'Tự sản xuất', stage:'Kiểm thử', progress:58, launch:'2026-10', pic:'Nguyễn A. Tùng', status:'Đúng tiến độ', note:''},
-  {id:14, name:'Máy hút ẩm mini để bàn HA-3L', group:'hutam', type:'OEM', stage:'Ý tưởng', progress:5, launch:'2027-04', pic:'Phạm Đức Anh', status:'Đúng tiến độ', note:'Nghiên cứu xu hướng phòng nhỏ'},
-];
-
-/* ---------------------------- STATE ---------------------------- */
-const STATE = {
-  view:'tong-quan',
-  editMode:false,
-  scriptUrl: APPS_SCRIPT_URL_DEFAULT,
-  connected:false,
-  lastSync:null,
-  data: generateMockData(),
-  portfolio: JSON.parse(JSON.stringify(PORTFOLIO)),
-  projects: JSON.parse(JSON.stringify(PROJECTS)),
-  todos:[
-    {id:1, text:'Chốt giá NY quạt BLDC SB-618 trước tuần sau', done:false},
-    {id:2, text:'Review sell-out GT tháng 6 với sales', done:true},
-    {id:3, text:'Duyệt bao bì mới cho Bình nước nóng BNN-30L', done:false},
-  ],
-  charts:{},
-};
-
-const fmt = n => n==null ? '—' : new Intl.NumberFormat('vi-VN').format(Math.round(n));
-const fmt1 = n => n==null ? '—' : new Intl.NumberFormat('vi-VN',{maximumFractionDigits:1}).format(n);
-const groupByKey = k => GROUPS.find(g=>g.key===k);
-
-/* ============================= NAV ============================= */
-const NAV_ITEMS = [
-  {key:'tong-quan', label:'Tổng quan', icon:ICONS.overview},
-  {key:'kd-ton-kho', label:'Kinh doanh &amp; tồn kho', icon:ICONS.sales},
-  {key:'danh-muc', label:'Danh mục sản phẩm', icon:ICONS.portfolio},
-  {key:'ptsp', label:'Dự án PTSPM', icon:ICONS.project},
-  {key:'canh-bao', label:'Cảnh báo &amp; công việc', icon:ICONS.alert, badgeKey:'alerts'},
-  {key:'cai-dat', label:'Cài đặt kết nối', icon:ICONS.settings},
-];
-const PAGE_TITLES = {
-  'tong-quan':'Tổng quan', 'kd-ton-kho':'Kinh doanh &amp; tồn kho', 'danh-muc':'Danh mục sản phẩm (BCG)',
-  'ptsp':'Quản trị dự án PTSPM', 'canh-bao':'Cảnh báo &amp; công việc', 'cai-dat':'Cài đặt kết nối dữ liệu'
-};
-
-function renderNav(){
-  const el = document.getElementById('navList');
-  el.innerHTML = `<div class="nav-label">Điều hướng</div>` + NAV_ITEMS.map(it=>{
-    const alerts = it.badgeKey==='alerts' ? computeAlerts().length : 0;
-    return `<button class="nav-item ${STATE.view===it.key?'active':''} ${alerts?'alert':''}" data-view="${it.key}">
-      ${it.icon}<span>${it.label}</span>${alerts?`<span class="badge">${alerts}</span>`:''}
-    </button>`;
-  }).join('');
-  el.querySelectorAll('.nav-item').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
-}
-
-function switchView(key){
-  STATE.view = key;
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById('view-'+key).classList.add('active');
-  document.getElementById('pageTitle').innerHTML = PAGE_TITLES[key];
-  renderNav();
-  if(window.innerWidth<=900) document.getElementById('sidebar').classList.remove('open');
-}
-document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.goto)));
-
-/* ============================= DERIVED METRICS ============================= */
-function groupYTD(gkey){
-  const months = STATE.data[gkey].months;
-  let rev=0, target=0, units=0, unitsTarget=0;
-  months.forEach(m=>{ if(m.month<CURRENT_MONTH){ rev+=m.revenue||0; target+=m.targetRevenue||0; units+=m.actual||0; unitsTarget+=m.target||0; } });
-  return {rev, target, units, unitsTarget};
-}
-function groupAnnual(gkey){
-  const months = STATE.data[gkey].months;
-  const annualTarget = months.reduce((s,m)=>s+m.targetRevenue,0);
-  const ytd = groupYTD(gkey);
-  const monthsLeft = 12-CURRENT_MONTH+1;
-  const runRate = ytd.rev/(CURRENT_MONTH-1||1);
-  const projected = ytd.rev + runRate*monthsLeft;
-  return {annualTarget, ytdRev:ytd.rev, projected, pct: annualTarget? (ytd.rev/annualTarget*100):0, projPct: annualTarget? (projected/annualTarget*100):0};
-}
-function currentInventory(gkey){
-  const months = STATE.data[gkey].months;
-  const m = months.find(mm=>mm.month===CURRENT_MONTH) || months[CURRENT_MONTH-1];
-  return {actual:m.invActual, target:m.invTarget};
-}
-function invHealth(actual, target){
-  const ratio = actual/target;
-  if(ratio>1.3) return {label:'Tồn cao', cls:'kill'};
-  if(ratio<0.6) return {label:'Tồn thấp', cls:'milk'};
-  return {label:'Ổn định', cls:'star'};
-}
-const STAGE_CLS = {grow:'grow', star:'star', milk:'milk', kill:'kill'};
-const STAGE_LABEL = {grow:'Đầu tư mạnh', star:'Turn into Star', milk:'Maintain & Milk', kill:'Killed'};
-
-function computeAlerts(){
-  const alerts = [];
-  GROUPS.forEach(g=>{
-    const inv = currentInventory(g.key);
-    const h = invHealth(inv.actual, inv.target);
-    if(h.cls==='kill') alerts.push({sev:'high', title:`Tồn kho ${g.name} vượt ngưỡng`, desc:`Tồn hiện tại ${fmt(inv.actual)} chiếc, vượt ${Math.round((inv.actual/inv.target-1)*100)}% so với mục tiêu.`});
-    if(h.cls==='milk') alerts.push({sev:'mid', title:`Tồn kho ${g.name} thấp`, desc:`Tồn hiện tại ${fmt(inv.actual)} chiếc, chỉ đạt ${Math.round(inv.actual/inv.target*100)}% mục tiêu — rủi ro thiếu hàng.`});
-    const an = groupAnnual(g.key);
-    if(an.projPct<90) alerts.push({sev:'high', title:`${g.name} dự kiến không đạt KH năm`, desc:`Dự phóng cả năm đạt ${Math.round(an.projPct)}% kế hoạch (${fmt(an.projected)} tr đ / ${fmt(an.annualTarget)} tr đ).`});
-  });
-  STATE.projects.forEach(p=>{
-    if(p.status==='Chậm tiến độ') alerts.push({sev:'high', title:`Dự án chậm tiến độ: ${p.name}`, desc:`PIC: ${p.pic} · Giai đoạn: ${p.stage} · Dự kiến ra mắt ${p.launch}`});
-    if(p.status==='Rủi ro') alerts.push({sev:'mid', title:`Dự án có rủi ro: ${p.name}`, desc:p.note || `PIC: ${p.pic} · Giai đoạn: ${p.stage}`});
-  });
-  return alerts;
-}
-
-/* ============================= TOAST ============================= */
-function toast(msg, type=''){
-  const c = document.getElementById('toast-container');
-  const t = document.createElement('div');
-  t.className = 'toast'+(type?' '+type:'');
-  t.textContent = msg;
-  c.appendChild(t);
-  setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .3s'; setTimeout(()=>t.remove(),300); }, 2800);
-}
-
-/* ============================= CONNECTION / SYNC ============================= */
-function refreshConnectionUI(){
-  const dot = document.getElementById('sideDot');
-  const sideText = document.getElementById('sideConnText');
-  const syncText = document.getElementById('sideSyncText');
-  const pill = document.getElementById('connPill');
-  if(STATE.scriptUrl && STATE.connected){
-    dot.className='dot on'; sideText.textContent='Đã kết nối Google Sheet';
-    pill.className='pill ok'; pill.textContent='● Dữ liệu trực tiếp từ Sheet';
-  } else if(STATE.scriptUrl && !STATE.connected){
-    dot.className='dot mock'; sideText.textContent='Chưa xác minh kết nối';
-    pill.className='pill mock'; pill.textContent='● Chưa xác minh kết nối';
-  } else {
-    dot.className='dot mock'; sideText.textContent='Chưa kết nối Google Sheet';
-    pill.className='pill mock'; pill.textContent='● Chế độ xem mẫu';
+    if(life==="Đang bán" || life==="Ngừng bán"){
+      const months = life==="Ngừng bán" ? [1,2,3] : [1,2,3,4,5,6,7,8,9,10,11,12];
+      const price = {Entry:1000000,Core:1500000,Better:2200000,Premium:3000000}[seg];
+      let stock = 300+ i*7;
+      for(const m of months){
+        const planVol = 200+ (i*3)%80;
+        const planRev = planVol*price;
+        const hasActual = life==="Ngừng bán" || m<=7;
+        const actVol = hasActual ? Math.round(planVol*(0.8+seedRand()*0.3)) : 0;
+        const actRev = Math.round(actVol*price*(0.97+seedRand()*0.06));
+        const period = `2026-${String(m).padStart(2,'0')}`;
+        sales.push({[SF.period]:period,[SF.pid]:pid,[SF.model]:model,[SF.industry]:cat,[SF.group]:group,[SF.channel]:channel,[SF.planRev]:planRev,[SF.actRev]:actRev,[SF.planVol]:planVol,[SF.actVol]:actVol,[SF.updated]:"2026-07-15",[SF.note]:""});
+        const open = stock;
+        const restock = m===1 ? planVol : (seedRand()<0.3 ? planVol:0);
+        const close = Math.max(0, open-actVol+restock);
+        inventory.push({[IVF.period]:period,[IVF.pid]:pid,[IVF.model]:model,[IVF.industry]:cat,[IVF.group]:group,[IVF.channel]:channel,[IVF.open]:open,[IVF.soldActual]:actVol,[IVF.close]:close,[IVF.delta]:close-open,[IVF.updated]:"2026-07-15",[IVF.note]:""});
+        stock = close;
+      }
+    }
   }
-  syncText.textContent = STATE.lastSync ? ('Đồng bộ lúc '+STATE.lastSync) : 'Dữ liệu mẫu (demo)';
-  document.getElementById('statusSource').textContent = STATE.connected ? 'Google Sheet (qua Apps Script)' : 'Dữ liệu mẫu (demo)';
-  document.getElementById('statusTime').textContent = STATE.lastSync || '—';
-  document.getElementById('statusCount').textContent = STATE.connected ? fmt(STATE.projects.length + STATE.portfolio.length) : '—';
+  return {master, sales, inventory, project};
 }
 
-async function callAppsScript(action, payload){
-  if(!STATE.scriptUrl){ toast('Chưa cấu hình URL Apps Script — xem mục Cài đặt kết nối', 'warn'); return null; }
+/* ---------------------------- DATA LOADING ------------------------------ */
+async function loadData(){
+  setSyncStatus("loading");
   try{
-    const res = await fetch(STATE.scriptUrl, {
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify({action, payload})
-    });
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    return await res.json();
-  }catch(err){
-    toast('Không thể kết nối Google Sheet: '+err.message, 'warn');
-    return null;
+    const res = await fetch(CONFIG.webAppUrl + "?action=getAll");
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const data = await res.json();
+    if(!data || (!data.master && !data.sales)) throw new Error("Empty payload");
+    DB.master = data.master || [];
+    DB.sales = data.sales || [];
+    DB.inventory = data.inventory || [];
+    DB.project = data.project || [];
+    CONFIG.connected = true;
+    CONFIG.lastSync = new Date();
+    showBanner(false);
+    setSyncStatus(true);
+  }catch(e){
+    console.warn("Không tải được dữ liệu thật, dùng dữ liệu mẫu:", e);
+    const mock = generateMock();
+    DB = mock;
+    CONFIG.connected = false;
+    showBanner(true);
+    setSyncStatus(false);
+  }
+  buildIndex();
+  populateFilterOptions();
+  renderAll();
+}
+
+function showBanner(offline){
+  const b = document.getElementById('loadBanner');
+  if(offline){
+    b.style.display="flex"; b.className="banner";
+    b.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+    Không kết nối được tới Google Sheet (kiểm tra quyền truy cập Web App) — đang hiển thị <b>dữ liệu mẫu offline</b>. Vào <b>Kết nối dữ liệu</b> để kiểm tra lại.`;
+  } else {
+    b.style.display="flex"; b.className="banner ok";
+    b.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg> Đã kết nối Google Sheet thành công — dữ liệu đang hiển thị là dữ liệu thật.`;
+    setTimeout(()=>{ b.style.display="none"; }, 4000);
   }
 }
-
-async function testConnection(){
-  const url = document.getElementById('scriptUrlInput').value.trim();
-  STATE.scriptUrl = url;
-  if(!url){ toast('Vui lòng nhập Web App URL', 'warn'); refreshConnectionUI(); return; }
-  const res = await callAppsScript('ping', {});
-  STATE.connected = !!(res && res.ok);
-  if(STATE.connected) toast('Kết nối Google Sheet thành công', 'ok');
-  refreshConnectionUI();
+function setSyncStatus(status){
+  const dot = document.getElementById('syncDot'), label = document.getElementById('syncLabel');
+  if(status==="loading"){ label.textContent="Đang tải dữ liệu…"; dot.classList.add('off'); return; }
+  dot.classList.toggle('off', !status);
+  label.textContent = status ? "Đã kết nối Google Sheet" : "Chế độ dữ liệu mẫu (offline)";
+  document.getElementById('lastSyncText').textContent = CONFIG.lastSync ? CONFIG.lastSync.toLocaleString('vi-VN') : "Chưa đồng bộ";
+  document.getElementById('rowCounts').textContent = `Master ${DB.master.length} · Sales ${DB.sales.length} · Inventory ${DB.inventory.length} · Project ${DB.project.length}`;
 }
 
-async function loadFromSheet(){
-  if(!STATE.scriptUrl){ toast('Vui lòng nhập và kiểm tra kết nối trước', 'warn'); return; }
-  const res = await callAppsScript('getAll', {});
-  if(res && res.ok && res.data){
-    if(res.data.monthly) STATE.data = res.data.monthly;
-    if(res.data.portfolio) STATE.portfolio = res.data.portfolio;
-    if(res.data.projects) STATE.projects = res.data.projects;
-    STATE.connected = true;
-    STATE.lastSync = new Date().toLocaleString('vi-VN');
-    toast('Đã tải dữ liệu mới nhất từ Google Sheet', 'ok');
-    renderAll();
+function buildIndex(){
+  IDX.masterByPid = new Map(DB.master.map(r=>[r[F.pid], r]));
+  IDX.projectByPid = new Map(DB.project.map(r=>[r[PF_.pid], r]));
+  // enrich sales/inventory rows with joined attributes from master (segment, role, lifecycle)
+  DB.sales.forEach(r=>{
+    const m = IDX.masterByPid.get(r[SF.pid]) || {};
+    r._segment = m[F.segment] || ""; r._role = m[F.role] || ""; r._period = parsePeriod(r[SF.period]);
+  });
+  DB.inventory.forEach(r=>{
+    const m = IDX.masterByPid.get(r[IVF.pid]) || {};
+    r._segment = m[F.segment] || ""; r._role = m[F.role] || ""; r._period = parsePeriod(r[IVF.period]);
+  });
+  IDX.periods = uniqueSorted([...DB.sales.map(r=>r[SF.period]), ...DB.inventory.map(r=>r[IVF.period])]);
+  IDX.latestPeriod = IDX.periods[IDX.periods.length-1] || null;
+  const py = IDX.latestPeriod ? parsePeriod(IDX.latestPeriod).year : new Date().getFullYear();
+  IDX.year = py;
+}
+
+function populateFilterOptions(){
+  fillSelect(document.getElementById('bizIndustry'), uniqueSorted(DB.master.map(r=>r[F.industry])));
+  fillSelect(document.getElementById('bizGroup'), uniqueSorted(DB.master.map(r=>r[F.group])));
+  fillSelect(document.getElementById('bizChannel'), uniqueSorted(DB.sales.map(r=>r[SF.channel])));
+  fillSelect(document.getElementById('bizSegment'), SEGMENTS);
+  fillSelect(document.getElementById('invChannel'), uniqueSorted(DB.inventory.map(r=>r[IVF.channel])));
+  fillSelect(document.getElementById('invIndustry'), uniqueSorted(DB.master.map(r=>r[F.industry])));
+  fillSelect(document.getElementById('pfType'), uniqueSorted(DB.master.map(r=>r[F.ptype])));
+  fillSelect(document.getElementById('pjChannel'), uniqueSorted(DB.master.map(r=>r[F.channel])));
+  fillSelect(document.getElementById('pjSource'), uniqueSorted(DB.project.map(r=>r[PF_.source])));
+  fillSelect(document.getElementById('pjStatus'), uniqueSorted(DB.project.map(r=>r[PF_.status])));
+  fillSelect(document.getElementById('pjGroup'), uniqueSorted(DB.project.map(r=>r[PF_.group])));
+  fillSelect(document.getElementById('pjLogPM'), uniqueSorted(DB.project.map(r=>r[PF_.pm])));
+  fillSelect(document.getElementById('pjLogUnit'), uniqueSorted(DB.project.map(r=>r[PF_.unit])));
+
+  ["ovPeriodSelect","bizPeriodSelect","invPeriodSelect"].forEach(id=>{
+    const sel = document.getElementById(id);
+    sel.innerHTML = IDX.periods.map(p=>`<option value="${p}">${p}</option>`).join('');
+    if(IDX.latestPeriod) sel.value = IDX.latestPeriod;
+  });
+}
+
+/* ------------------------------- NAV ------------------------------------ */
+const TITLES = {
+  overview:["Tổng quan","Bức tranh chung về kinh doanh, tồn kho và dự án phát triển sản phẩm"],
+  business:["Kinh doanh","Doanh thu, sản lượng và ASP theo kỳ / ngành hàng / kênh / phân khúc"],
+  inventory:["Tồn kho","Rollforward tồn kho và cảnh báo theo tốc độ bán"],
+  portfolio:["Danh mục sản phẩm","Ma trận Vai trò danh mục × Phân khúc × Loại sản phẩm"],
+  projects:["Dự án PTSPM","Kanban 12 giai đoạn, độ lệch tiến độ và nhật ký cập nhật"],
+  alerts:["Cảnh báo &amp; việc cần làm","Tự động phát hiện các điểm cần xử lý"],
+  pmperf:["Hiệu suất Product Manager","Khối lượng công việc và tỷ lệ đúng hạn theo từng PM"],
+  dataqa:["Kiểm tra chất lượng dữ liệu","Đối chiếu quy tắc nhập liệu theo tab Hướng dẫn"],
+  settings:["Kết nối dữ liệu","Cấu hình Google Apps Script Web App"],
+};
+document.querySelectorAll('.nav-item').forEach(item=> item.addEventListener('click', ()=> goto(item.dataset.section)));
+function goto(name){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.section===name));
+  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active', s.id === 'sec-'+name));
+  document.getElementById('pageTitle').textContent = TITLES[name][0];
+  document.getElementById('pageSub').innerHTML = TITLES[name][1];
+}
+
+const chartInstances = {};
+function chart(id, type, labels, datasets, opts={}){
+  const ctx = document.getElementById(id);
+  if(!ctx) return;
+  if(chartInstances[id]) chartInstances[id].destroy();
+  chartInstances[id] = new Chart(ctx, {
+    type, data:{labels, datasets},
+    options:{
+      responsive:true, maintainAspectRatio:false, indexAxis: opts.horizontal ? 'y':'x',
+      plugins:{
+        legend:{ position: opts.legendBottom?'bottom':'top', labels:{font:{family:'Inter',size:11.5,weight:'600'}, color:'#5E736D', boxWidth:12, padding:12} },
+        tooltip:{backgroundColor:'#0E5E4E', titleFont:{family:'Tahoma'}, bodyFont:{family:'Inter'}, padding:10, cornerRadius:8}
+      },
+      scales: type==='doughnut'? {} : (opts.dual ? {
+        y:{position:'left', grid:{color:'#E3F3EE'}, ticks:{color:'#5E736D', font:{size:11}}},
+        y1:{position:'right', grid:{display:false}, ticks:{color:'#5E736D', font:{size:11}}},
+        x:{grid:{display:false}, ticks:{color:'#5E736D', font:{size:11}}}
+      } : {
+        x:{stacked: !!opts.stacked, grid:{display:false}, ticks:{color:'#5E736D', font:{size:11}}},
+        y:{stacked: !!opts.stacked, grid:{color:'#E3F3EE'}, ticks:{color:'#5E736D', font:{size:11}}}
+      }),
+      cutout: type==='doughnut' ? '62%' : undefined
+    }
+  });
+}
+function iconChart(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21V9M9 21V4M15 21v-7M21 21V12"/></svg>`;}
+function iconBox(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></svg>`;}
+function iconFlag(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V4h13l-2 4 2 4H4"/></svg>`;}
+function iconTag(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41L11 3.83A2 2 0 009.59 3H4a1 1 0 00-1 1v5.59a2 2 0 00.59 1.41l9.58 9.59a2 2 0 002.82 0l6.6-6.6a2 2 0 000-2.83z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg>`;}
+
+/* ============================ PERIOD SCOPE HELPERS ======================= */
+function monthsInScope(periodMode, periodValue){
+  // periodValue is either "YYYY-MM" (month mode), or quarter index within year, or null for ytd
+  if(periodMode==="month") return [periodValue];
+  if(periodMode==="quarter"){
+    const {year} = parsePeriod(periodValue);
+    const q = Math.floor((parsePeriod(periodValue).month-1)/3);
+    return [1,2,3].map(o=>`${year}-${String(q*3+o).padStart(2,'0')}`);
   }
-  refreshConnectionUI();
+  // ytd
+  const {year, month} = parsePeriod(periodValue);
+  const out=[];
+  for(let m=1;m<=month;m++) out.push(`${year}-${String(m).padStart(2,'0')}`);
+  return out;
 }
 
-async function pushUpdate(sheetName, row){
-  if(!STATE.scriptUrl){
-    toast('Đang ở chế độ xem mẫu — thay đổi chỉ lưu tạm trong phiên này', 'warn');
-    return;
-  }
-  const res = await callAppsScript('updateRow', {sheet:sheetName, row});
-  if(res && res.ok) toast('Đã lưu vào Google Sheet', 'ok');
-}
-
-/* ============================= RENDER: TỔNG QUAN ============================= */
+/* ============================ 1. OVERVIEW ================================ */
 function renderOverview(){
-  // KPI row
-  let totalYTD=0, totalTarget=0, totalAnnualTarget=0, totalProjected=0;
-  GROUPS.forEach(g=>{ const y=groupYTD(g.key); const a=groupAnnual(g.key); totalYTD+=y.rev; totalTarget+=y.target; totalAnnualTarget+=a.annualTarget; totalProjected+=a.projected; });
-  const pctYTD = totalTarget? (totalYTD/totalTarget*100):0;
-  const alerts = computeAlerts();
-  const projActive = STATE.projects.filter(p=>p.status!=='Hoàn thành').length;
+  const scope = monthsInScope(state.ovPeriod, state.ovIdx || IDX.latestPeriod);
+  const salesInScope = DB.sales.filter(r=> scope.includes(r[SF.period]));
+  const revActual = salesInScope.reduce((a,r)=>a+(+r[SF.actRev]||0),0);
+  const revPlan = salesInScope.reduce((a,r)=>a+(+r[SF.planRev]||0),0);
+  const volActual = salesInScope.reduce((a,r)=>a+(+r[SF.actVol]||0),0);
+  const volPlan = salesInScope.reduce((a,r)=>a+(+r[SF.planVol]||0),0);
+
+  const latestInv = DB.inventory.filter(r=> r[IVF.period]===IDX.latestPeriod);
+  const totalStock = latestInv.reduce((a,r)=>a+(+r[IVF.close]||0),0);
+
+  const activeProjects = DB.project.filter(p=> p[PF_.status]!=="Completed" && p[PF_.stage]!=="Hủy dự án");
+  const sellingSkus = DB.master.filter(m=> m[F.lifecycle]==="Đang bán");
 
   const kpis = [
-    {label:'Doanh thu YTD toàn công ty', value:fmt(totalYTD)+' tr đ', delta:(pctYTD>=100?'up':'down'), deltaText:Math.round(pctYTD)+'% so với KH lũy kế', icon:ICONS.sales, color:'var(--mint-600)'},
-    {label:'Dự phóng cả năm', value:fmt(totalProjected)+' tr đ', delta:(totalProjected>=totalAnnualTarget?'up':'down'), deltaText:Math.round(totalProjected/totalAnnualTarget*100)+'% KH năm', icon:ICONS.overview, color:'var(--blue)'},
-    {label:'Dự án PTSPM đang triển khai', value:projActive, delta:'up', deltaText:STATE.projects.length+' dự án tổng', icon:ICONS.project, color:'var(--amber)'},
-    {label:'Cảnh báo cần xử lý', value:alerts.length, delta: alerts.length>3?'down':'up', deltaText: alerts.filter(a=>a.sev==='high').length+' mức ưu tiên cao', icon:ICONS.alert, color:'var(--red)'},
+    {label:"Doanh thu thực tế (kỳ)", value: fmtVND(revActual), delta: pct(safeDiv(revActual,revPlan))+" so với kế hoạch", up: safeDiv(revActual,revPlan)>=0.9, icon:iconChart()},
+    {label:"Sản lượng thực tế (kỳ)", value: fmt(volActual)+" sp", delta: pct(safeDiv(volActual,volPlan))+" so với kế hoạch", up: safeDiv(volActual,volPlan)>=0.9, icon:iconBox()},
+    {label:"Tổng tồn cuối kỳ mới nhất", value: fmt(totalStock)+" sp", delta: "Kỳ "+ (IDX.latestPeriod||"—"), up:true, icon:iconTag()},
+    {label:"Dự án PTSPM đang triển khai", value: activeProjects.length, delta: sellingSkus.length+" SKU đang bán", up:true, icon:iconFlag()},
   ];
-  document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
-    <div class="card kpi-card">
-      <div class="icon-badge" style="background:${k.color}1A; color:${k.color};">${k.icon}</div>
-      <div class="label">${k.label}</div>
-      <div class="value">${k.value}</div>
-      <div class="delta ${k.delta}">${k.delta==='up'?ICONS.trend:ICONS.trendDown} ${k.deltaText}</div>
-    </div>`).join('');
+  document.getElementById('ovKpiRow').innerHTML = kpis.map(k=>`
+    <div class="card kpi"><div class="kpi-icon">${k.icon}</div><div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div><div class="kpi-delta ${k.up?'up':'down'}">${k.delta}</div></div>`).join('');
 
-  // group table
-  document.getElementById('overviewGroupTable').innerHTML = GROUPS.map(g=>{
-    const y = groupYTD(g.key); const a = groupAnnual(g.key); const inv = currentInventory(g.key); const h = invHealth(inv.actual, inv.target);
-    const bcgStages = STATE.portfolio.filter(p=>p.group===g.key).map(p=>p.stage);
-    const dominant = bcgStages.length ? bcgStages.sort((x,y2)=>bcgStages.filter(v=>v===x).length - bcgStages.filter(v=>v===y2).length).pop() : 'grow';
-    return `<tr>
-      <td><span class="group-icon" style="background:${g.color}1A;">${g.emoji}</span> <strong>${g.name}</strong></td>
-      <td class="num">${fmt(y.rev)}</td>
-      <td class="num">${fmt(a.annualTarget)}</td>
-      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(a.pct,100)}%; background:${g.color};"></div></div><span class="num" style="font-size:12px;">${Math.round(a.pct)}%</span></div></td>
-      <td class="num">${fmt(inv.actual)}</td>
-      <td><span class="tag ${h.cls}">${h.label}</span></td>
-      <td><span class="tag ${STAGE_CLS[dominant]}">${STAGE_LABEL[dominant]}</span></td>
-    </tr>`;
-  }).join('');
+  // 12-month trend for the year of the latest period
+  const year = IDX.year;
+  const months = Array.from({length:12},(_,i)=>`${year}-${String(i+1).padStart(2,'0')}`);
+  const revByMonth = months.map(m=> DB.sales.filter(r=>r[SF.period]===m).reduce((a,r)=>a+(+r[SF.actRev]||0),0) || null);
+  const volByMonth = months.map(m=> DB.sales.filter(r=>r[SF.period]===m).reduce((a,r)=>a+(+r[SF.actVol]||0),0) || null);
+  chart('chartOverviewTrend','line', months.map(m=>m.slice(5)+"/"+year), [
+    {label:'Doanh thu thực tế', data:revByMonth, borderColor:'#1C927A', backgroundColor:'#1C927A22', yAxisID:'y', tension:.3, spanGaps:true},
+    {label:'Sản lượng thực tế', data:volByMonth, borderColor:'#3E7CB1', backgroundColor:'#3E7CB122', yAxisID:'y1', tension:.3, spanGaps:true},
+  ], {dual:true});
 
-  document.getElementById('overviewAlerts').innerHTML = alerts.slice(0,3).map(alertHtml).join('') || `<div class="empty">Không có cảnh báo nào 🎉</div>`;
+  const roleCounts = ROLES.map(r=> DB.master.filter(m=>m[F.role]===r).length);
+  chart('chartOvRole','doughnut', ROLES, [{data:roleCounts, backgroundColor:['#1C927A','#4FC3AA','#3E7CB1','#DE9A2C','#7C6FC4']}], {legendBottom:true});
 
-  renderChartOverviewRevenue();
-  renderChartOverviewShare();
+  const industries = uniqueSorted(DB.master.map(m=>m[F.industry]));
+  const stockByIndustry = industries.map(ind=> latestInv.filter(r=>r[IVF.industry]===ind).reduce((a,r)=>a+(+r[IVF.close]||0),0));
+  chart('chartOvStock','doughnut', industries, [{data:stockByIndustry, backgroundColor:['#1C927A','#4FC3AA','#8FDBC4','#DE9A2C']}], {legendBottom:true});
 }
 
-function alertHtml(a){
-  const sevCls = a.sev==='high'?'sev-high':(a.sev==='mid'?'sev-mid':'sev-low');
-  return `<div class="alert-item ${sevCls}"><div class="ic">${ICONS.alert}</div><div class="body"><div class="title">${a.title}</div><div class="desc">${a.desc}</div></div></div>`;
-}
+document.querySelectorAll('#ovPeriodTabs .tab').forEach(t=> t.addEventListener('click', ()=>{
+  document.querySelectorAll('#ovPeriodTabs .tab').forEach(x=>x.classList.remove('active')); t.classList.add('active');
+  state.ovPeriod = t.dataset.period; renderOverview();
+}));
+document.getElementById('ovPeriodSelect').addEventListener('change', e=>{ state.ovIdx = e.target.value; renderOverview(); });
 
-function renderChartOverviewRevenue(){
-  const ctx = document.getElementById('chartOverviewRevenue');
-  const labels = MONTH_NAMES;
-  const actualSeries = labels.map((_,i)=>{ let s=0; GROUPS.forEach(g=>{ const m=STATE.data[g.key].months[i]; s+=m.revenue||0; }); return s||null; });
-  const targetSeries = labels.map((_,i)=>{ let s=0; GROUPS.forEach(g=>{ const m=STATE.data[g.key].months[i]; s+=m.targetRevenue||0; }); return s; });
-  if(STATE.charts.overviewRevenue) STATE.charts.overviewRevenue.destroy();
-  STATE.charts.overviewRevenue = new Chart(ctx, {
-    type:'bar',
-    data:{ labels, datasets:[
-      {type:'line', label:'Kế hoạch', data:targetSeries, borderColor:'#DE9A2E', backgroundColor:'#DE9A2E', tension:.35, pointRadius:2, borderDash:[5,3]},
-      {label:'Thực tế', data:actualSeries, backgroundColor:'#12977A', borderRadius:5, maxBarThickness:26},
-    ]},
-    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom', labels:{boxWidth:10, font:{size:11}}}}, scales:{y:{grid:{color:'#EEF3F1'}}, x:{grid:{display:false}}}}
-  });
+/* ============================ 2. BUSINESS ================================ */
+function filteredSales(){
+  return DB.sales.filter(r=>
+    (state.bizIndustry==="all"||r[SF.industry]===state.bizIndustry) &&
+    (state.bizGroup==="all"||r[SF.group]===state.bizGroup) &&
+    (state.bizChannel==="all"||r[SF.channel]===state.bizChannel) &&
+    (state.bizSegment==="all"||r._segment===state.bizSegment)
+  );
 }
-function renderChartOverviewShare(){
-  const ctx = document.getElementById('chartOverviewShare');
-  const data = GROUPS.map(g=>groupYTD(g.key).rev);
-  if(STATE.charts.overviewShare) STATE.charts.overviewShare.destroy();
-  STATE.charts.overviewShare = new Chart(ctx, {
-    type:'doughnut',
-    data:{ labels:GROUPS.map(g=>g.name), datasets:[{data, backgroundColor:GROUPS.map(g=>g.color), borderWidth:2, borderColor:'#fff'}] },
-    options:{responsive:true, maintainAspectRatio:false, cutout:'62%', plugins:{legend:{position:'right', labels:{boxWidth:10, font:{size:10.5}, padding:8}}}}
-  });
-}
+function renderBusiness(){
+  const periodVal = state.bizIdx || IDX.latestPeriod;
+  const scope = monthsInScope(state.bizPeriod, periodVal);
+  const rows = filteredSales().filter(r=> scope.includes(r[SF.period]));
 
-/* ============================= RENDER: KINH DOANH & TỒN KHO ============================= */
-function renderMonthPicker(){
-  const sel = document.getElementById('monthPicker');
-  if(sel.options.length===0){
-    sel.innerHTML = MONTH_NAMES.map((m,i)=>`<option value="${i+1}">Tháng ${i+1}/2026</option>`).join('');
-    sel.value = CURRENT_MONTH;
-    sel.addEventListener('change', renderMonthView);
+  const revP = rows.reduce((a,r)=>a+(+r[SF.planRev]||0),0), revA = rows.reduce((a,r)=>a+(+r[SF.actRev]||0),0);
+  const volP = rows.reduce((a,r)=>a+(+r[SF.planVol]||0),0), volA = rows.reduce((a,r)=>a+(+r[SF.actVol]||0),0);
+  const asp = safeDiv(revA, volA);
+
+  document.getElementById('bzRev').textContent = fmtVND(revA);
+  document.getElementById('bzRevD').textContent = "KH " + fmtVND(revP);
+  document.getElementById('bzVol').textContent = fmt(volA)+" sp";
+  document.getElementById('bzVolD').textContent = "KH " + fmt(volP)+" sp";
+  document.getElementById('bzAsp').textContent = fmtVND(asp);
+  document.getElementById('bzAch').textContent = pct(safeDiv(revA,revP));
+  const achBadge = document.getElementById('bzAch').parentElement.querySelector('.kpi-delta');
+  achBadge.className = "kpi-delta " + (safeDiv(revA,revP)>=0.9 ? "up":"down");
+
+  // plan vs actual by month/quarter across the whole scope range (always show full year for context)
+  const year = IDX.year;
+  let labels, planData, actData;
+  if(state.bizPeriod==="quarter"){
+    labels = ["Q1","Q2","Q3","Q4"];
+    planData = [0,1,2,3].map(q=> filteredSales().filter(r=>{const p=parsePeriod(r[SF.period]); return p && p.year===year && Math.floor((p.month-1)/3)===q;}).reduce((a,r)=>a+(+r[SF.planRev]||0),0));
+    actData = [0,1,2,3].map(q=> filteredSales().filter(r=>{const p=parsePeriod(r[SF.period]); return p && p.year===year && Math.floor((p.month-1)/3)===q;}).reduce((a,r)=>a+(+r[SF.actRev]||0),0));
+  } else {
+    labels = Array.from({length:12},(_,i)=>String(i+1).padStart(2,'0'));
+    planData = labels.map(m=> filteredSales().filter(r=>r[SF.period]===`${year}-${m}`).reduce((a,r)=>a+(+r[SF.planRev]||0),0));
+    actData = labels.map(m=> filteredSales().filter(r=>r[SF.period]===`${year}-${m}`).reduce((a,r)=>a+(+r[SF.actRev]||0),0));
   }
-}
-function renderMonthView(){
-  const month = parseInt(document.getElementById('monthPicker').value,10);
-  let planUnits=0, actualUnits=0, revenue=0, planRevenue=0;
-  GROUPS.forEach(g=>{ const m=STATE.data[g.key].months[month-1]; planUnits+=m.target; actualUnits+=m.actual||0; revenue+=m.revenue||0; planRevenue+=m.targetRevenue; });
-  const pct = planUnits? (actualUnits/planUnits*100):0;
-  document.getElementById('monthKpi').innerHTML = `
-    <div class="card kpi-card"><div class="label">Sản lượng kế hoạch</div><div class="value">${fmt(planUnits)}</div></div>
-    <div class="card kpi-card"><div class="label">Sản lượng thực tế</div><div class="value">${fmt(actualUnits)}</div><div class="delta ${pct>=100?'up':'down'}">${Math.round(pct)}% kế hoạch</div></div>
-    <div class="card kpi-card"><div class="label">Doanh thu tháng (tr đ)</div><div class="value">${fmt(revenue)}</div><div class="delta ${revenue>=planRevenue?'up':'down'}">KH ${fmt(planRevenue)} tr đ</div></div>
-  `;
-  const tbody = document.querySelector('#tableThang tbody');
-  tbody.innerHTML = GROUPS.map(g=>{
-    const m = STATE.data[g.key].months[month-1];
-    const p = m.target? (m.actual||0)/m.target*100 : 0;
-    return `<tr data-group="${g.key}">
-      <td><span class="group-icon" style="background:${g.color}1A;">${g.emoji}</span> ${g.name}</td>
-      <td class="num">${fmt(m.target)}</td>
-      <td class="num editable-cell"><input type="number" data-field="actual" value="${m.actual==null?'':m.actual}" ${STATE.editMode?'':'disabled'}></td>
-      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(p,100)}%; background:${g.color};"></div></div><span class="num" style="font-size:12px;">${Math.round(p)}%</span></div></td>
-      <td class="num">${fmt(m.revenue)}</td>
-      <td class="num editable-cell"><input type="number" data-field="invActual" value="${m.invActual}" ${STATE.editMode?'':'disabled'}></td>
-      <td class="num">${fmt(m.invTarget)}</td>
+  chart('chartBizPlanActual','bar', labels, [
+    {label:'Doanh thu KH', data:planData, backgroundColor:'#D2F0E6', borderRadius:6},
+    {label:'Doanh thu TT', data:actData, backgroundColor:'#1C927A', borderRadius:6},
+  ]);
+
+  // ASP by segment trend (year to date, monthly)
+  const monthsAll = Array.from({length:IDX.year && periodVal ? parsePeriod(periodVal).month : 12},(_,i)=>`${year}-${String(i+1).padStart(2,'0')}`);
+  const aspDatasets = SEGMENTS.map((seg,i)=>{
+    const colors = ['#1C927A','#4FC3AA','#3E7CB1','#DE9A2C'];
+    const data = monthsAll.map(m=>{
+      const rs = DB.sales.filter(r=> r[SF.period]===m && r._segment===seg);
+      const rv = rs.reduce((a,r)=>a+(+r[SF.actRev]||0),0), vv = rs.reduce((a,r)=>a+(+r[SF.actVol]||0),0);
+      return vv? Math.round(rv/vv) : null;
+    });
+    return {label:seg, data, borderColor:colors[i], backgroundColor:colors[i]+"22", tension:.3, spanGaps:true};
+  });
+  chart('chartAspSegment','line', monthsAll.map(m=>m.slice(5)), aspDatasets);
+
+  // table by SKU
+  const byPid = {};
+  rows.forEach(r=>{
+    const k = r[SF.pid]+"|"+r[SF.channel];
+    byPid[k] = byPid[k] || {pid:r[SF.pid], model:r[SF.model], industry:r[SF.industry], channel:r[SF.channel], seg:r._segment, planRev:0, actRev:0, planVol:0, actVol:0};
+    byPid[k].planRev += (+r[SF.planRev]||0); byPid[k].actRev += (+r[SF.actRev]||0);
+    byPid[k].planVol += (+r[SF.planVol]||0); byPid[k].actVol += (+r[SF.actVol]||0);
+  });
+  const list = Object.values(byPid).sort((a,b)=> b.actRev - a.actRev);
+  document.getElementById('bizTableBody').innerHTML = list.map(s=>{
+    const achRev = safeDiv(s.actRev, s.planRev), achVol = safeDiv(s.actVol, s.planVol);
+    const aspSku = safeDiv(s.actRev, s.actVol);
+    return `<tr>
+      <td class="mono nowrap">${s.pid}</td><td>${s.model}</td><td>${s.industry}</td>
+      <td><span class="badge mint">${s.channel}</span></td><td><span class="badge grey">${s.seg}</span></td>
+      <td class="right mono">${fmt(s.planRev)}</td><td class="right mono">${fmt(s.actRev)}</td>
+      <td class="right"><span class="badge ${achRev>=0.95?'mint':achRev>=0.75?'amber':'red'}">${pct(achRev)}</span></td>
+      <td class="right mono">${fmt(s.planVol)}</td><td class="right mono">${fmt(s.actVol)}</td>
+      <td class="right"><span class="badge ${achVol>=0.95?'mint':achVol>=0.75?'amber':'red'}">${pct(achVol)}</span></td>
+      <td class="right mono">${fmtVND(aspSku)}</td>
     </tr>`;
-  }).join('');
-  tbody.querySelectorAll('input').forEach(inp=>{
-    inp.addEventListener('change', ()=>{
-      const gkey = inp.closest('tr').dataset.group;
-      const field = inp.dataset.field;
-      const val = parseFloat(inp.value)||0;
-      const m = STATE.data[gkey].months[month-1];
-      m[field] = val;
-      if(field==='actual') m.revenue = Math.round(val * groupByKey(gkey).avgPrice);
-      renderMonthView(); renderOverview(); renderNav();
-      pushUpdate('KinhDoanh', {group:gkey, month, field, value:val});
+  }).join('') || `<tr><td colspan="12" class="empty-hint">Không có dữ liệu phù hợp bộ lọc</td></tr>`;
+}
+document.querySelectorAll('#bizPeriodTabs .tab').forEach(t=> t.addEventListener('click', ()=>{
+  document.querySelectorAll('#bizPeriodTabs .tab').forEach(x=>x.classList.remove('active')); t.classList.add('active');
+  state.bizPeriod = t.dataset.period; renderBusiness();
+}));
+['bizPeriodSelect','bizIndustry','bizGroup','bizChannel','bizSegment'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', e=>{
+    const key = id==="bizPeriodSelect" ? "bizIdx" : id;
+    state[key] = e.target.value; renderBusiness();
+  });
+});
+
+/* ============================ 3. INVENTORY ================================ */
+function renderInventory(){
+  const periodVal = state.invIdx || IDX.latestPeriod;
+  const rows = DB.inventory.filter(r=>
+    r[IVF.period]===periodVal &&
+    (state.invChannel==="all"||r[IVF.channel]===state.invChannel) &&
+    (state.invIndustry==="all"||r[IVF.industry]===state.invIndustry)
+  );
+  const totalClose = rows.reduce((a,r)=>a+(+r[IVF.close]||0),0);
+  const totalDelta = rows.reduce((a,r)=>a+(+r[IVF.delta]||0),0);
+
+  const withDos = rows.map(r=>{
+    const weeklyRate = (+r[IVF.soldActual]||0)/4.345;
+    const dos = weeklyRate>0 ? (+r[IVF.close]||0)/weeklyRate : null;
+    return {...r, _dos:dos};
+  });
+  const low = withDos.filter(r=> r._dos!==null && r._dos<3);
+  const high = withDos.filter(r=> r._dos!==null && r._dos>10);
+
+  document.getElementById('invClose').textContent = fmt(totalClose)+" sp";
+  document.getElementById('invCloseD').textContent = "Kỳ "+periodVal;
+  document.getElementById('invDelta').textContent = (totalDelta>=0?"+":"")+fmt(totalDelta)+" sp";
+  document.getElementById('invLow').textContent = low.length;
+  document.getElementById('invHigh').textContent = high.length;
+
+  // trend by industry across months
+  const industries = uniqueSorted(DB.master.map(m=>m[F.industry]));
+  const year = IDX.year;
+  const months = Array.from({length:12},(_,i)=>`${year}-${String(i+1).padStart(2,'0')}`);
+  const datasets = industries.map((ind,i)=>{
+    const colors=['#1C927A','#4FC3AA','#8FDBC4','#DE9A2C'];
+    const data = months.map(m=>{
+      const rr = DB.inventory.filter(r=>r[IVF.period]===m && r[IVF.industry]===ind);
+      return rr.length ? rr.reduce((a,r)=>a+(+r[IVF.close]||0),0) : null;
+    });
+    return {label:ind, data, borderColor:colors[i%4], backgroundColor:colors[i%4]+"22", tension:.3, spanGaps:true};
+  });
+  chart('chartInvTrend','line', months.map(m=>m.slice(5)), datasets);
+
+  document.getElementById('invTableBody').innerHTML = withDos.sort((a,b)=> (a._dos??999)-(b._dos??999)).map(r=>{
+    const dosLabel = r._dos===null ? "—" : r._dos.toFixed(1);
+    const warn = r._dos!==null && r._dos<3 ? `<span class="badge red">Thiếu hàng</span>` :
+                 r._dos!==null && r._dos>10 ? `<span class="badge amber">Dư tồn</span>` : `<span class="badge mint">Ổn định</span>`;
+    return `<tr>
+      <td class="mono nowrap">${r[IVF.pid]}</td><td>${r[IVF.model]}</td><td>${r[IVF.industry]}</td>
+      <td><span class="badge blue">${r[IVF.channel]}</span></td>
+      <td class="right mono">${fmt(r[IVF.open])}</td><td class="right mono">${fmt(r[IVF.soldActual])}</td>
+      <td class="right mono">${fmt(r[IVF.close])}</td>
+      <td class="right mono" style="color:${(+r[IVF.delta]||0)<0?'var(--red-500)':'var(--mint-700)'}">${(+r[IVF.delta]||0)>=0?"+":""}${fmt(r[IVF.delta])}</td>
+      <td class="right mono">${dosLabel}</td><td>${warn}</td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="10" class="empty-hint">Không có dữ liệu tồn kho cho kỳ/bộ lọc này</td></tr>`;
+}
+['invPeriodSelect','invChannel','invIndustry'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', e=>{
+    const key = id==="invPeriodSelect" ? "invIdx" : id;
+    state[key] = e.target.value; renderInventory();
+  });
+});
+
+/* ============================ 4. PORTFOLIO ================================ */
+function lifecycleGroupMatch(life, filter){
+  if(filter==="all") return true;
+  if(filter==="kinhdoanh") return life==="Đang bán" || life==="Chuẩn bị bán";
+  if(filter==="phattrien") return life==="Đang phát triển";
+  if(filter==="ngung") return life==="Ngừng bán";
+  return true;
+}
+function renderPortfolio(){
+  const rows = DB.master.filter(m=>
+    (state.pfType==="all"||m[F.ptype]===state.pfType) &&
+    lifecycleGroupMatch(m[F.lifecycle], state.pfLifecycle)
+  );
+
+  // matrix Vai trò x Phân khúc
+  let html = '<tr><th>Vai trò \\ Phân khúc</th>'+SEGMENTS.map(s=>`<th>${s}</th>`).join('')+'<th>Tổng</th></tr>';
+  ROLES.forEach(role=>{
+    html += `<tr><th>${role}</th>`;
+    let rowTotal=0;
+    SEGMENTS.forEach(seg=>{
+      const count = rows.filter(m=>m[F.role]===role && m[F.segment]===seg).length;
+      rowTotal += count;
+      const intensity = Math.min(count/6,1);
+      const bg = count===0 ? 'transparent' : `rgba(28,146,122,${0.08+intensity*0.35})`;
+      const active = (state.pfSelectedRole===role && state.pfSelectedSeg===seg) ? 'outline:2px solid var(--mint-600);' : '';
+      html += `<td class="cell" style="background:${bg};${active}" data-role="${role}" data-seg="${seg}">${count||''}</td>`;
+    });
+    html += `<td style="font-weight:700;">${rowTotal}</td></tr>`;
+  });
+  document.getElementById('pfMatrix').innerHTML = html;
+  document.querySelectorAll('#pfMatrix td.cell').forEach(td=>{
+    td.addEventListener('click', ()=>{
+      const role = td.dataset.role, seg = td.dataset.seg;
+      if(state.pfSelectedRole===role && state.pfSelectedSeg===seg){ state.pfSelectedRole=null; state.pfSelectedSeg=null; }
+      else { state.pfSelectedRole=role; state.pfSelectedSeg=seg; }
+      renderPortfolio();
     });
   });
-  document.querySelector('.table-wrap table')?.classList.toggle('edit-mode', STATE.editMode);
-  document.getElementById('tableThang').closest('.card').classList.toggle('edit-mode', STATE.editMode);
-}
 
-function renderQuarterView(){
-  const quarters = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]];
-  const qData = quarters.map(qm=>{
-    let units=0, target=0, rev=0;
-    GROUPS.forEach(g=>{ qm.forEach(mm=>{ const m=STATE.data[g.key].months[mm-1]; units+=m.actual||0; target+=m.target; rev+=m.revenue||0; }); });
-    return {units, target, rev};
+  const filtered = rows.filter(m=> (!state.pfSelectedRole || (m[F.role]===state.pfSelectedRole && m[F.segment]===state.pfSelectedSeg)));
+  document.getElementById('pfTableBody').innerHTML = filtered.map(m=>{
+    const proj = IDX.projectByPid.get(m[F.pid]);
+    const projBadge = proj ? `<button class="btn sm jump-project" data-pid="${m[F.pid]}"><span class="badge violet">${proj[PF_.projectId]}</span></button>` : '<span class="badge grey">—</span>';
+    return `<tr>
+      <td class="mono nowrap">${m[F.pid]}</td><td>${m[F.model]}</td><td>${m[F.industry]}</td><td>${m[F.group]}</td>
+      <td><span class="badge grey">${m[F.segment]}</span></td><td><span class="badge blue">${m[F.role]}</span></td>
+      <td>${m[F.ptype]}</td><td><span class="badge ${m[F.lifecycle]==='Đang bán'?'mint':m[F.lifecycle]==='Ngừng bán'?'red':'amber'}">${m[F.lifecycle]}</span></td>
+      <td>${projBadge}</td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="9" class="empty-hint">Không có SKU phù hợp</td></tr>`;
+
+  document.querySelectorAll('.jump-project').forEach(b=> b.addEventListener('click', ()=>{
+    state.pjHighlightPid = b.dataset.pid;
+    goto('projects'); renderProjects();
+  }));
+}
+document.getElementById('pfType').addEventListener('change', e=>{ state.pfType=e.target.value; renderPortfolio(); });
+document.getElementById('pfLifecycle').addEventListener('change', e=>{ state.pfLifecycle=e.target.value; renderPortfolio(); });
+
+/* ============================ 5. PROJECTS ================================ */
+function stageColIndex(stage){ return STAGES_12.indexOf(stage); }
+function filteredProjects(){
+  return DB.project.filter(p=>{
+    const m = IDX.masterByPid.get(p[PF_.pid]) || {};
+    return (state.pjChannel==="all"||m[F.channel]===state.pjChannel) &&
+           (state.pjSource==="all"||p[PF_.source]===state.pjSource) &&
+           (state.pjStatus==="all"||p[PF_.status]===state.pjStatus) &&
+           (state.pjGroup==="all"||p[PF_.group]===state.pjGroup) &&
+           (!state.pjHighlightPid || p[PF_.pid]===state.pjHighlightPid);
   });
-  document.getElementById('quarterKpi').innerHTML = qData.map((q,i)=>`
-    <div class="card kpi-card"><div class="label">Quý ${i+1}/2026</div><div class="value">${fmt(q.rev)} <span style="font-size:12px; color:var(--ink-500);">tr đ</span></div>
-    <div class="delta ${q.units>=q.target?'up':'down'}">${q.target? Math.round(q.units/q.target*100):0}% sản lượng KH</div></div>`).join('');
-  const ctx = document.getElementById('chartQuarter');
-  if(STATE.charts.quarter) STATE.charts.quarter.destroy();
-  STATE.charts.quarter = new Chart(ctx,{ type:'bar', data:{ labels:['Q1','Q2','Q3','Q4'], datasets:[
-    {label:'Kế hoạch (chiếc)', data:qData.map(q=>q.target), backgroundColor:'#DEEBE5', borderRadius:6},
-    {label:'Thực tế (chiếc)', data:qData.map(q=>q.units), backgroundColor:'#12977A', borderRadius:6},
-  ]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y:{grid:{color:'#EEF3F1'}}, x:{grid:{display:false}}}}});
 }
+function renderProjects(){
+  document.getElementById('pfHighlightCard').style.display = state.pjHighlightPid ? 'block':'none';
+  document.getElementById('pfHighlightText').textContent = state.pjHighlightPid || '';
 
-function renderYTDView(){
-  document.getElementById('ytdLabel').textContent = `Đến hết tháng ${CURRENT_MONTH-1}/2026`;
-  const labels = MONTH_NAMES.slice(0,CURRENT_MONTH-1);
-  let cum=0; const cumSeries = labels.map((_,i)=>{ let s=0; GROUPS.forEach(g=>{ s+=STATE.data[g.key].months[i].revenue||0; }); cum+=s; return cum; });
-  const ctx = document.getElementById('chartYTD');
-  if(STATE.charts.ytd) STATE.charts.ytd.destroy();
-  STATE.charts.ytd = new Chart(ctx,{type:'line', data:{labels, datasets:[{label:'Lũy kế doanh thu (tr đ)', data:cumSeries, borderColor:'#12977A', backgroundColor:'rgba(18,151,122,.12)', fill:true, tension:.35, pointRadius:3}]}, options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{grid:{color:'#EEF3F1'}}, x:{grid:{display:false}}}}});
-  document.getElementById('ytdGroupList').innerHTML = GROUPS.map(g=>{
-    const y = groupYTD(g.key); const pct = y.target? y.rev/y.target*100:0;
-    return `<div style="display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line);">
-      <span class="group-icon" style="background:${g.color}1A;">${g.emoji}</span>
-      <div style="flex:1;"><div style="font-size:13px; font-weight:600;">${g.name}</div>
-      <div class="bar-track" style="margin-top:5px;"><div class="bar-fill" style="width:${Math.min(pct,100)}%; background:${g.color};"></div></div></div>
-      <div class="num" style="font-size:12.5px; font-weight:700;">${fmt(y.rev)} tr</div>
-    </div>`;
-  }).join('');
-}
+  const list = filteredProjects();
+  const active = list.filter(p=> p[PF_.status]!=="Completed" && p[PF_.stage]!=="Hủy dự án");
+  document.getElementById('pjTotal').textContent = active.length;
+  document.getElementById('pjOn').textContent = list.filter(p=>p[PF_.status]==="On track").length;
+  document.getElementById('pjRisk').textContent = list.filter(p=>p[PF_.status]==="Delayed"||p[PF_.status]==="Watch").length;
+  document.getElementById('pjDone').textContent = list.filter(p=>p[PF_.stage]==="Đã ra mắt").length;
 
-function renderPlanView(){
-  const labels = GROUPS.map(g=>g.name);
-  const pctData = GROUPS.map(g=>groupAnnual(g.key).pct);
-  const projData = GROUPS.map(g=>groupAnnual(g.key).projPct);
-  const ctx = document.getElementById('chartPlanProgress');
-  if(STATE.charts.plan) STATE.charts.plan.destroy();
-  STATE.charts.plan = new Chart(ctx,{type:'bar', data:{labels, datasets:[
-    {label:'% hoàn thành YTD', data:pctData, backgroundColor:'#12977A', borderRadius:5},
-    {label:'% dự phóng cả năm', data:projData, backgroundColor:'#3E76D6', borderRadius:5},
-  ]}, options:{indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{x:{grid:{color:'#EEF3F1'}, ticks:{callback:v=>v+'%'}}, y:{grid:{display:false}}}}});
-  document.getElementById('planTable').innerHTML = GROUPS.map(g=>{
-    const a = groupAnnual(g.key);
-    const likely = a.projPct>=100 ? {t:'Khả năng đạt', c:'star'} : a.projPct>=90 ? {t:'Cần theo dõi', c:'milk'} : {t:'Rủi ro không đạt', c:'kill'};
-    return `<tr>
-      <td><span class="group-icon" style="background:${g.color}1A;">${g.emoji}</span> ${g.name}</td>
-      <td class="num">${fmt(a.annualTarget)}</td>
-      <td class="num">${fmt(a.ytdRev)}</td>
-      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${Math.min(a.pct,100)}%; background:${g.color};"></div></div><span class="num" style="font-size:12px;">${Math.round(a.pct)}%</span></div></td>
-      <td class="num">${fmt(a.projected)}</td>
-      <td><span class="tag ${likely.c}">${likely.t}</span></td>
-    </tr>`;
-  }).join('');
-}
-
-function renderGroupCards(){
-  document.getElementById('groupCardsGrid').innerHTML = GROUPS.map(g=>{
-    const y = groupYTD(g.key); const inv = currentInventory(g.key); const h = invHealth(inv.actual, inv.target); const a=groupAnnual(g.key);
-    return `<div class="card">
-      <div class="card-head"><h3><span class="group-icon" style="background:${g.color}1A;">${g.emoji}</span> ${g.name}</h3><span class="tag ${h.cls}">${h.label}</span></div>
-      <div style="font-size:12px; color:var(--ink-500); margin-bottom:4px;">Doanh thu YTD</div>
-      <div class="num" style="font-size:20px; font-weight:800; margin-bottom:10px;">${fmt(y.rev)} <span style="font-size:12px; font-weight:600; color:var(--ink-500);">tr đ</span></div>
-      <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--ink-500); margin-bottom:14px;">
-        <span>KH năm: <strong class="num" style="color:var(--ink-900);">${fmt(a.annualTarget)}</strong></span>
-        <span>Tồn kho: <strong class="num" style="color:var(--ink-900);">${fmt(inv.actual)}</strong></span>
-      </div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.min(a.pct,100)}%; background:${g.color};"></div></div>
-      <div style="font-size:11.5px; color:var(--ink-500); margin-top:5px;">${Math.round(a.pct)}% kế hoạch năm</div>
-    </div>`;
-  }).join('');
-}
-
-function renderKDView(){ renderMonthPicker(); renderMonthView(); renderQuarterView(); renderYTDView(); renderPlanView(); renderGroupCards(); }
-
-/* ============================= RENDER: DANH MỤC (BCG) ============================= */
-function renderBCG(){
-  const channel = document.getElementById('bcgChannelPicker').value;
-  const filtered = STATE.portfolio.filter(p=>channel==='all'||p.channel===channel);
-  const quadrants = [
-    {key:'grow', title:'Invest &amp; Grow Aggressively', sub:'Đầu tư và phát triển mạnh mẽ', cls:'grow'},
-    {key:'star', title:'Turn into Star', sub:'Phát triển thành ngôi sao', cls:'star'},
-    {key:'milk', title:'Maintain &amp; Milk', sub:'Duy trì, thu hồi vốn', cls:'milk'},
-    {key:'kill', title:'Killed', cls:'kill', sub:'Chấm dứt đầu tư'},
-  ];
-  document.getElementById('bcgQuadrants').innerHTML = quadrants.map(q=>{
-    const items = filtered.filter(p=>p.stage===q.key);
-    return `<div class="card">
-      <div class="card-head"><h3><span class="tag ${q.cls}">${q.title}</span></h3><span class="hint">${items.length} SKU</span></div>
-      <div style="font-size:12px; color:var(--ink-500); margin-bottom:12px;">${q.sub}</div>
-      ${items.length? items.map(p=>{ const g=groupByKey(p.group); return `<div style="display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--line);">
-        <span class="group-icon" style="background:${g.color}1A; width:26px; height:26px; font-size:13px;">${g.emoji}</span>
-        <div style="flex:1;"><div style="font-size:13px; font-weight:700;">${p.sku}</div><div style="font-size:11.5px; color:var(--ink-500);">${p.role}</div></div>
-      </div>`; }).join('') : `<div class="empty" style="padding:16px;">Không có SKU</div>`}
+  // Kanban main 12 stages
+  const board = document.getElementById('kanbanBoard');
+  board.innerHTML = STAGES_12.map(stage=>{
+    const items = list.filter(p=>p[PF_.stage]===stage);
+    return `<div class="kcol"><div class="kcol-head"><span>${stage}</span><span class="badge mint">${items.length}</span></div>
+      ${items.map(p=>`<div class="kcard"><div class="m">${p[PF_.pid]} · ${IDX.masterByPid.get(p[PF_.pid])?.[F.model]||''}</div>
+        <div class="s">${p[PF_.pm]} · <span class="badge ${p[PF_.priority]==='Critical'?'red':p[PF_.priority]==='High'?'amber':'grey'}">${p[PF_.priority]}</span></div>
+        <div class="progress ${p[PF_.status]==='Delayed'?'danger':p[PF_.status]==='Watch'?'warn':''}"><span style="width:${Math.round((+p[PF_.pct]||0)*100)}%"></span></div>
+      </div>`).join('') || `<div class="empty-hint" style="padding:10px;">—</div>`}
     </div>`;
   }).join('');
 
-  document.getElementById('portfolioTable').innerHTML = filtered.map(p=>{
-    const g = groupByKey(p.group);
-    return `<tr>
-      <td><strong>${p.sku}</strong></td>
-      <td><span class="group-icon" style="background:${g.color}1A; width:24px; height:24px; font-size:12px;">${g.emoji}</span> ${g.name}</td>
-      <td>${p.channel}</td>
-      <td>${p.role}</td>
-      <td><span class="tag ${STAGE_CLS[p.stage]}">${STAGE_LABEL[p.stage]}</span></td>
-      <td class="num">${p.price? fmt(p.price):'—'}</td>
-      <td style="white-space:normal; max-width:220px;">${p.note||''}</td>
-    </tr>`;
+  const exc = document.getElementById('kanbanException');
+  exc.innerHTML = STAGES_EXC.map(stage=>{
+    const items = list.filter(p=>p[PF_.stage]===stage);
+    return `<div class="kcol"><div class="kcol-head"><span>${stage}</span><span class="badge grey">${items.length}</span></div>
+      ${items.map(p=>`<div class="kcard"><div class="m">${p[PF_.pid]}</div><div class="s">${p[PF_.pm]}</div></div>`).join('') || `<div class="empty-hint" style="padding:10px;">Không có</div>`}
+    </div>`;
   }).join('');
-}
 
-/* ============================= RENDER: PTSPM ============================= */
-function renderPTSPKPI(){
-  const total = STATE.projects.length;
-  const oem = STATE.projects.filter(p=>p.type==='OEM').length;
-  const own = total-oem;
-  const risk = STATE.projects.filter(p=>p.status==='Rủi ro'||p.status==='Chậm tiến độ').length;
-  const done = STATE.projects.filter(p=>p.status==='Hoàn thành').length;
-  document.getElementById('ptspKpi').innerHTML = `
-    <div class="card kpi-card"><div class="label">Tổng số dự án</div><div class="value">${total}</div></div>
-    <div class="card kpi-card"><div class="label">OEM / Tự sản xuất</div><div class="value">${oem} / ${own}</div></div>
-    <div class="card kpi-card"><div class="label">Dự án có rủi ro / chậm</div><div class="value" style="color:${risk?'var(--red)':'inherit'}">${risk}</div></div>
-    <div class="card kpi-card"><div class="label">Đã ra mắt</div><div class="value">${done}</div></div>`;
-}
-function renderPTSPTable(){
-  const typeF = document.getElementById('ptspFilterType').value;
-  const groupF = document.getElementById('ptspFilterGroup').value;
-  const rows = STATE.projects.filter(p=> (typeF==='all'||p.type===typeF) && (groupF==='all'||p.group===groupF) );
-  const statusCls = {'Đúng tiến độ':'star','Rủi ro':'milk','Chậm tiến độ':'kill','Hoàn thành':'grow'};
-  document.getElementById('ptspTable').innerHTML = rows.map(p=>{
-    const g = groupByKey(p.group);
-    return `<tr data-id="${p.id}" style="cursor:pointer;">
-      <td style="white-space:normal; max-width:260px;"><strong>${p.name}</strong></td>
-      <td><span class="group-icon" style="background:${g.color}1A; width:24px; height:24px; font-size:12px;">${g.emoji}</span> ${g.name}</td>
-      <td><span class="tag ${p.type==='OEM'?'grow':'star'}">${p.type}</span></td>
-      <td>${p.stage}</td>
-      <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${p.progress}%; background:${g.color};"></div></div><span class="num" style="font-size:12px;">${p.progress}%</span></div></td>
-      <td>${p.launch}</td>
-      <td>${p.pic}</td>
-      <td><span class="tag ${statusCls[p.status]}">${p.status}</span></td>
-      <td><button class="btn ghost sm edit-project" data-id="${p.id}">Sửa</button></td>
-    </tr>`;
-  }).join('') || `<tr><td colspan="9"><div class="empty">Không có dự án phù hợp bộ lọc</div></td></tr>`;
-  document.querySelectorAll('.edit-project').forEach(b=>b.addEventListener('click',(e)=>{ e.stopPropagation(); openProjectModal(parseInt(b.dataset.id)); }));
-}
-function renderPTSP(){
-  const gsel = document.getElementById('ptspFilterGroup');
-  if(gsel.options.length<=1) gsel.innerHTML = `<option value="all">Tất cả nhóm hàng</option>` + GROUPS.map(g=>`<option value="${g.key}">${g.name}</option>`).join('');
-  renderPTSPKPI(); renderPTSPTable();
-}
+  // delay chart
+  const delayData = list.map(p=>{
+    const plan = parseDateVal(p[PF_.planLaunch]);
+    const upd = parseDateVal(p[PF_.updatedLaunch]);
+    const act = parseDateVal(p[PF_.actualLaunch]);
+    const slipExpected = (plan&&upd) ? daysBetween(plan,upd) : null;
+    const slipActual = (plan&&act) ? daysBetween(plan,act) : null;
+    return {label: p[PF_.pid], slipExpected, slipActual};
+  }).filter(d=> (d.slipExpected||0)>0 || (d.slipActual||0)>0)
+    .sort((a,b)=> (b.slipExpected||b.slipActual||0) - (a.slipExpected||a.slipActual||0))
+    .slice(0,15);
+  chart('chartDelay','bar', delayData.map(d=>d.label), [
+    {label:'Trễ dự kiến (ngày)', data:delayData.map(d=>d.slipExpected), backgroundColor:'#DE9A2C', borderRadius:5},
+    {label:'Trễ thực tế (ngày)', data:delayData.map(d=>d.slipActual), backgroundColor:'#D3564C', borderRadius:5},
+  ], {horizontal:true});
 
-/* project modal */
-let editingProjectId = null;
-function openProjectModal(id){
-  const psel = document.getElementById('pf-group');
-  if(psel.options.length===0) psel.innerHTML = GROUPS.map(g=>`<option value="${g.key}">${g.name}</option>`).join('');
-  editingProjectId = id || null;
-  const p = id ? STATE.projects.find(x=>x.id===id) : null;
-  document.getElementById('projectModalTitle').textContent = p? 'Chỉnh sửa dự án' : 'Thêm dự án PTSPM';
-  document.getElementById('projectDeleteBtn').style.display = p ? 'inline-flex':'none';
-  document.getElementById('pf-name').value = p?.name || '';
-  document.getElementById('pf-group').value = p?.group || GROUPS[0].key;
-  document.getElementById('pf-type').value = p?.type || 'Tự sản xuất';
-  document.getElementById('pf-stage').value = p?.stage || 'Ý tưởng';
-  document.getElementById('pf-progress').value = p?.progress ?? 10;
-  document.getElementById('pf-launch').value = p?.launch || '';
-  document.getElementById('pf-pic').value = p?.pic || '';
-  document.getElementById('pf-status').value = p?.status || 'Đúng tiến độ';
-  document.getElementById('pf-note').value = p?.note || '';
-  document.getElementById('projectModalOverlay').classList.add('show');
+  // log
+  const logList = list.filter(p=>
+    (state.pjLogPM==="all"||p[PF_.pm]===state.pjLogPM) && (state.pjLogUnit==="all"||p[PF_.unit]===state.pjLogUnit)
+  ).sort((a,b)=> (parseDateVal(b[PF_.updated])||0) - (parseDateVal(a[PF_.updated])||0));
+  document.getElementById('pjLog').innerHTML = logList.map(p=>`
+    <div class="log-item">
+      <div class="meta"><b>${p[PF_.pid]}</b> · ${p[PF_.name]} · ${p[PF_.pm]} · ${p[PF_.unit]} · Cập nhật ${fmtDate(p[PF_.updated])} · <span class="badge ${p[PF_.status]==='Delayed'?'red':p[PF_.status]==='Watch'?'amber':'mint'}">${p[PF_.status]}</span></div>
+      <div class="row-line"><b>Đã hoàn thành:</b> ${p[PF_.done]||'—'}</div>
+      <div class="row-line"><b>Đang thực hiện:</b> ${p[PF_.doing]||'—'}</div>
+      <div class="row-line"><b>Tiếp theo:</b> ${p[PF_.next]||'—'}</div>
+    </div>`).join('') || `<div class="empty-hint">Không có dự án phù hợp</div>`;
 }
-function closeProjectModal(){ document.getElementById('projectModalOverlay').classList.remove('show'); }
-function saveProject(){
-  const val = {
-    name: document.getElementById('pf-name').value.trim(),
-    group: document.getElementById('pf-group').value,
-    type: document.getElementById('pf-type').value,
-    stage: document.getElementById('pf-stage').value,
-    progress: parseInt(document.getElementById('pf-progress').value)||0,
-    launch: document.getElementById('pf-launch').value,
-    pic: document.getElementById('pf-pic').value.trim(),
-    status: document.getElementById('pf-status').value,
-    note: document.getElementById('pf-note').value.trim(),
-  };
-  if(!val.name){ toast('Vui lòng nhập tên dự án','warn'); return; }
-  if(editingProjectId){
-    const idx = STATE.projects.findIndex(x=>x.id===editingProjectId);
-    STATE.projects[idx] = {...STATE.projects[idx], ...val};
-  } else {
-    const newId = Math.max(0,...STATE.projects.map(p=>p.id))+1;
-    STATE.projects.push({id:newId, ...val});
-  }
-  pushUpdate('PTSPM', {id:editingProjectId||'new', ...val});
-  closeProjectModal(); renderPTSP(); renderAlerts(); renderNav(); renderOverview();
-  toast('Đã lưu dự án', 'ok');
-}
-function deleteProject(){
-  if(!editingProjectId) return;
-  STATE.projects = STATE.projects.filter(p=>p.id!==editingProjectId);
-  pushUpdate('PTSPM', {id:editingProjectId, _delete:true});
-  closeProjectModal(); renderPTSP(); renderAlerts(); renderNav(); renderOverview();
-  toast('Đã xóa dự án', 'ok');
-}
-
-/* ============================= RENDER: CẢNH BÁO & TODO ============================= */
-function renderAlerts(){
-  const alerts = computeAlerts();
-  document.getElementById('alertList').innerHTML = alerts.map(alertHtml).join('') || `<div class="empty">Không có cảnh báo nào 🎉</div>`;
-}
-function renderTodos(){
-  document.getElementById('todoList').innerHTML = STATE.todos.map(t=>`
-    <div class="todo-item ${t.done?'done':''}" data-id="${t.id}">
-      <input type="checkbox" ${t.done?'checked':''}>
-      <span class="todo-text">${t.text}</span>
-      <button class="todo-del">✕</button>
-    </div>`).join('') || `<div class="empty">Chưa có việc cần làm</div>`;
-  document.querySelectorAll('.todo-item input').forEach(cb=>cb.addEventListener('change',()=>{
-    const id = parseInt(cb.closest('.todo-item').dataset.id);
-    STATE.todos.find(t=>t.id===id).done = cb.checked;
-    pushUpdate('Todo', {id, done:cb.checked});
-    renderTodos();
-  }));
-  document.querySelectorAll('.todo-del').forEach(b=>b.addEventListener('click',()=>{
-    const id = parseInt(b.closest('.todo-item').dataset.id);
-    STATE.todos = STATE.todos.filter(t=>t.id!==id);
-    pushUpdate('Todo', {id, _delete:true});
-    renderTodos();
-  }));
-}
-function addTodo(){
-  const inp = document.getElementById('todoInput');
-  const text = inp.value.trim();
-  if(!text) return;
-  const id = Math.max(0,...STATE.todos.map(t=>t.id))+1;
-  STATE.todos.push({id, text, done:false});
-  pushUpdate('Todo', {id, text, done:false});
-  inp.value='';
-  renderTodos();
-}
-
-/* ============================= RENDER ALL ============================= */
-function renderAll(){
-  renderNav();
-  renderOverview();
-  renderKDView();
-  renderBCG();
-  renderPTSP();
-  renderAlerts();
-  renderTodos();
-  refreshConnectionUI();
-}
-
-/* ============================= EVENTS ============================= */
-document.getElementById('kdSubtabs').addEventListener('click', e=>{
-  const b = e.target.closest('.subtab'); if(!b) return;
-  document.querySelectorAll('#kdSubtabs .subtab').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');
-  document.querySelectorAll('#view-kd-ton-kho .subview').forEach(x=>x.classList.remove('active'));
-  document.getElementById('sub-'+b.dataset.sub).classList.add('active');
+['pjChannel','pjSource','pjStatus','pjGroup','pjLogPM','pjLogUnit'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', e=>{ state[id]=e.target.value; renderProjects(); });
 });
-document.getElementById('bcgChannelPicker').addEventListener('change', renderBCG);
-document.getElementById('ptspFilterType').addEventListener('change', renderPTSPTable);
-document.getElementById('ptspFilterGroup').addEventListener('change', renderPTSPTable);
-document.getElementById('addProjectBtn').addEventListener('click', ()=>openProjectModal(null));
-document.getElementById('projectModalClose').addEventListener('click', closeProjectModal);
-document.getElementById('projectCancelBtn').addEventListener('click', closeProjectModal);
-document.getElementById('projectSaveBtn').addEventListener('click', saveProject);
-document.getElementById('projectDeleteBtn').addEventListener('click', deleteProject);
-document.getElementById('projectModalOverlay').addEventListener('click', e=>{ if(e.target.id==='projectModalOverlay') closeProjectModal(); });
-document.getElementById('todoAddBtn').addEventListener('click', addTodo);
-document.getElementById('todoInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addTodo(); });
+document.getElementById('clearHighlight').addEventListener('click', ()=>{ state.pjHighlightPid=null; renderProjects(); });
 
-function toggleEditMode(){
-  STATE.editMode = !STATE.editMode;
-  document.querySelectorAll('.switch').forEach(s=>s.classList.toggle('on', STATE.editMode));
-  document.getElementById('editHintThang').textContent = STATE.editMode ? 'Nhấn vào ô số liệu để chỉnh sửa, thay đổi sẽ tự lưu' : 'Bật "Chế độ chỉnh sửa" để nhập số liệu thực tế';
-  renderMonthView();
+/* ============================ 6. ALERTS =================================== */
+function renderAlerts(){
+  const latest = IDX.latestPeriod;
+  const invLatest = DB.inventory.filter(r=>r[IVF.period]===latest).map(r=>{
+    const weeklyRate = (+r[IVF.soldActual]||0)/4.345;
+    const dos = weeklyRate>0 ? (+r[IVF.close]||0)/weeklyRate : null;
+    return {...r,_dos:dos};
+  });
+  const invIssues = invLatest.filter(r=> r._dos!==null && (r._dos<3 || r._dos>10));
+
+  const today = new Date();
+  const dueSoon = DB.project.filter(p=>{
+    if(p[PF_.status]==="Completed" || p[PF_.stage]==="Hủy dự án") return false;
+    const d = parseDateVal(p[PF_.updatedLaunch]) || parseDateVal(p[PF_.planLaunch]);
+    if(!d) return false;
+    const diff = daysBetween(today, d);
+    return p[PF_.status]==="Delayed" || (diff!==null && diff<=30 && diff>=-9999);
+  });
+
+  const idxPeriods = IDX.periods.slice(-2);
+  const belowPlan = [];
+  if(idxPeriods.length===2){
+    const bySku = {};
+    DB.sales.filter(r=>idxPeriods.includes(r[SF.period])).forEach(r=>{
+      const k = r[SF.pid]+"|"+r[SF.channel];
+      bySku[k] = bySku[k] || {};
+      bySku[k][r[SF.period]] = safeDiv(+r[SF.actRev]||0, +r[SF.planRev]||0);
+    });
+    Object.entries(bySku).forEach(([k,v])=>{
+      const vals = idxPeriods.map(p=>v[p]);
+      if(vals.every(x=> x!==undefined && x<0.85)) belowPlan.push(k.split("|")[0]);
+    });
+  }
+
+  document.getElementById('alInv').textContent = invIssues.length;
+  document.getElementById('alDue').textContent = dueSoon.length;
+  document.getElementById('alPlan').textContent = belowPlan.length;
+
+  const rows = [];
+  invIssues.forEach(r=> rows.push({
+    level: r._dos<2 ? "Cao":"Trung bình",
+    text: r._dos<3 ? `Tồn kho ${r[IVF.pid]} (${r[IVF.channel]}) chỉ đủ bán ~${r._dos.toFixed(1)} tuần` : `Tồn kho ${r[IVF.pid]} (${r[IVF.channel]}) đang dư ~${r._dos.toFixed(1)} tuần bán`,
+    who: r[IVF.pid],
+    action: r._dos<3 ? "Đề xuất kế hoạch sản xuất / nhập hàng bổ sung gấp" : "Cân nhắc chương trình đẩy hàng / khuyến mãi"
+  }));
+  dueSoon.forEach(p=> rows.push({
+    level: p[PF_.status]==="Delayed" ? "Cao":"Trung bình",
+    text: `Dự án ${p[PF_.projectId]} (${p[PF_.pid]}) — ${p[PF_.status]}, ra mắt dự kiến ${fmtDate(p[PF_.updatedLaunch]||p[PF_.planLaunch])}`,
+    who: p[PF_.pm],
+    action: p[PF_.status]==="Delayed" ? "Họp rà soát nguyên nhân trễ, chốt lại mốc thời gian" : "Theo dõi sát tiến độ tuần tới"
+  }));
+  belowPlan.forEach(pid=> rows.push({
+    level:"Trung bình", text:`SKU ${pid} dưới 85% kế hoạch doanh thu 2 kỳ liên tiếp gần nhất`, who: pid,
+    action: "Rà soát nguyên nhân (giá / trưng bày / cạnh tranh) cùng đội kinh doanh"
+  }));
+
+  const lvlBadge = l => l==="Cao"?"red":"amber";
+  document.getElementById('alertsBody').innerHTML = rows.map(r=>`
+    <tr><td><span class="badge ${lvlBadge(r.level)}">${r.level}</span></td><td>${r.text}</td><td class="mono">${r.who}</td><td>${r.action}</td></tr>
+  `).join('') || `<tr><td colspan="4" class="empty-hint">Không có cảnh báo nào 🎉</td></tr>`;
 }
-document.getElementById('editSwitch').addEventListener('click', toggleEditMode);
-document.getElementById('editSwitch2').addEventListener('click', toggleEditMode);
-document.getElementById('syncBtn').addEventListener('click', async ()=>{ await loadFromSheet(); });
-document.getElementById('testConnBtn').addEventListener('click', testConnection);
-document.getElementById('loadFromSheetBtn').addEventListener('click', loadFromSheet);
-document.getElementById('scriptUrlInput').addEventListener('change', e=>{ STATE.scriptUrl = e.target.value.trim(); refreshConnectionUI(); });
 
-/* ============================= INIT ============================= */
-document.getElementById('footYear').textContent = 'Cập nhật: ' + new Date().toLocaleDateString('vi-VN');
-if(APPS_SCRIPT_URL_DEFAULT) document.getElementById('scriptUrlInput').value = APPS_SCRIPT_URL_DEFAULT;
-renderAll();
+/* ============================ 7. PM PERFORMANCE ============================ */
+function renderPmPerf(){
+  const pms = uniqueSorted(DB.project.map(p=>p[PF_.pm]));
+  const stats = pms.map(pm=>{
+    const projs = DB.project.filter(p=>p[PF_.pm]===pm);
+    const launched = projs.filter(p=> p[PF_.stage]==="Đã ra mắt" && p[PF_.actualLaunch]);
+    const onTime = launched.filter(p=>{
+      const plan = parseDateVal(p[PF_.planLaunch]), act = parseDateVal(p[PF_.actualLaunch]);
+      return plan && act && act<=plan;
+    });
+    const prio = {};
+    PRIORITIES.forEach(pr=> prio[pr] = projs.filter(p=>p[PF_.priority]===pr).length);
+    return {pm, total:projs.length, launched:launched.length, onTime:onTime.length, prio};
+  });
+
+  chart('chartPmCount','bar', stats.map(s=>s.pm), [{label:'Số dự án', data:stats.map(s=>s.total), backgroundColor:'#1C927A', borderRadius:6}]);
+  chart('chartPmOnTime','bar', stats.map(s=>s.pm), [{label:'% đúng hạn', data:stats.map(s=> s.launched? Math.round(s.onTime/s.launched*100):0), backgroundColor:'#3E7CB1', borderRadius:6}]);
+
+  document.getElementById('pmTableBody').innerHTML = stats.map(s=>`
+    <tr><td>${s.pm}</td><td class="right mono">${s.total}</td><td class="right mono">${s.launched}</td>
+      <td class="right mono">${s.onTime}</td><td class="right">${s.launched? pct(s.onTime/s.launched) : "Chưa có dữ liệu"}</td>
+      <td class="center mono">${s.prio.Critical}</td><td class="center mono">${s.prio.High}</td><td class="center mono">${s.prio.Medium}</td><td class="center mono">${s.prio.Low}</td>
+    </tr>`).join('') || `<tr><td colspan="9" class="empty-hint">Chưa có dữ liệu dự án</td></tr>`;
+}
+
+/* ============================ 8. DATA QA =================================== */
+function renderDataQA(){
+  const issues = [];
+
+  // 1) duplicate Product_ID
+  const pidCount = {};
+  DB.master.forEach(m=>{ pidCount[m[F.pid]] = (pidCount[m[F.pid]]||0)+1; });
+  const dupPid = Object.entries(pidCount).filter(([k,v])=>v>1);
+  dupPid.forEach(([pid,count])=> issues.push({type:"Product_ID trùng lặp", sheet:"01_PRODUCT_MASTER", detail:`${pid} xuất hiện ${count} lần`}));
+
+  // 2) missing Period/Product_ID in Sales/Inventory
+  DB.sales.forEach((r,i)=>{ if(!r[SF.period] || !r[SF.pid]) issues.push({type:"Thiếu Period/Product_ID", sheet:"02_SALES_MONTHLY", detail:`Dòng dữ liệu #${i+2} thiếu thông tin khóa`}); });
+  DB.inventory.forEach((r,i)=>{ if(!r[IVF.period] || !r[IVF.pid]) issues.push({type:"Thiếu Period/Product_ID", sheet:"03_INVENTORY_MONTHLY", detail:`Dòng dữ liệu #${i+2} thiếu thông tin khóa`}); });
+
+  // 3) channel mismatch between Sales and Inventory for same Period+Product_ID
+  const salesChByKey = {}, invChByKey = {};
+  DB.sales.forEach(r=>{ const k=`${r[SF.period]}|${r[SF.pid]}`; (salesChByKey[k]=salesChByKey[k]||new Set()).add(r[SF.channel]); });
+  DB.inventory.forEach(r=>{ const k=`${r[IVF.period]}|${r[IVF.pid]}`; (invChByKey[k]=invChByKey[k]||new Set()).add(r[IVF.channel]); });
+  const allKeys = new Set([...Object.keys(salesChByKey), ...Object.keys(invChByKey)]);
+  let mismatchCount=0;
+  allKeys.forEach(k=>{
+    const s = [...(salesChByKey[k]||[])].sort().join(",");
+    const v = [...(invChByKey[k]||[])].sort().join(",");
+    if(s!==v){
+      mismatchCount++;
+      if(mismatchCount<=30) issues.push({type:"Kênh bán không khớp Sales/Inventory", sheet:"02 vs 03", detail:`${k} — Sales:[${s||'—'}] · Inventory:[${v||'—'}]`});
+    }
+  });
+
+  // 4) orphan Product_ID (in sales/inventory/project but not in master)
+  const masterPids = new Set(DB.master.map(m=>m[F.pid]));
+  const orphanSales = [...new Set(DB.sales.filter(r=>!masterPids.has(r[SF.pid])).map(r=>r[SF.pid]))];
+  orphanSales.forEach(pid=> issues.push({type:"Product_ID không tồn tại trong Master", sheet:"02_SALES_MONTHLY", detail:pid}));
+  const orphanProj = [...new Set(DB.project.filter(p=>!masterPids.has(p[PF_.pid])).map(p=>p[PF_.pid]))];
+  orphanProj.forEach(pid=> issues.push({type:"Product_ID không tồn tại trong Master", sheet:"04_PRODUCT_PROJECT", detail:pid}));
+
+  const checks = [
+    {name:"Product_ID trùng lặp trong Master", count: dupPid.length},
+    {name:"Dòng thiếu Period / Product_ID", count: DB.sales.filter(r=>!r[SF.period]||!r[SF.pid]).length + DB.inventory.filter(r=>!r[IVF.period]||!r[IVF.pid]).length},
+    {name:"Kênh bán lệch giữa Sales và Inventory", count: mismatchCount},
+    {name:"Product_ID tham chiếu không tồn tại trong Master", count: orphanSales.length+orphanProj.length},
+  ];
+  document.getElementById('qaChecks').innerHTML = checks.map(c=>`
+    <div class="qa-check ${c.count===0?'pass':'fail'}">
+      <div class="ic">${c.count===0 ? '✓' : '!'}</div>
+      <div class="txt"><b>${c.name}</b><span>${c.count===0 ? 'Không phát hiện bất thường' : c.count+' bản ghi cần rà soát'}</span></div>
+    </div>`).join('');
+
+  document.getElementById('qaTableBody').innerHTML = issues.slice(0,200).map(i=>`
+    <tr><td><span class="badge amber">${i.type}</span></td><td class="mono">${i.sheet}</td><td>${i.detail}</td></tr>
+  `).join('') || `<tr><td colspan="3" class="empty-hint">Không có bản ghi nào cần rà soát 🎉</td></tr>`;
+}
+
+/* ============================== SETTINGS =================================== */
+document.getElementById('sheetUrlInput').value = CONFIG.webAppUrl;
+document.getElementById('saveUrlBtn').addEventListener('click', async ()=>{
+  const url = document.getElementById('sheetUrlInput').value.trim();
+  if(url) CONFIG.webAppUrl = url;
+  toast("Đang kết nối lại…");
+  await loadData();
+  toast(CONFIG.connected ? "Kết nối thành công!" : "Không kết nối được — đang dùng dữ liệu mẫu.", CONFIG.connected?"ok":"warn");
+});
+document.getElementById('testConnBtn').addEventListener('click', async ()=>{
+  try{
+    const res = await fetch(CONFIG.webAppUrl + "?action=getAll");
+    toast(res.ok ? "Kết nối OK ✓" : "Phản hồi lỗi HTTP "+res.status, res.ok?"ok":"warn");
+  }catch(e){ toast("Không kết nối được tới Web App.", "warn"); }
+});
+document.getElementById('syncBtn').addEventListener('click', async ()=>{
+  const icon = document.getElementById('syncBtn').querySelector('svg');
+  icon.classList.add('spin');
+  await loadData();
+  icon.classList.remove('spin');
+  toast(CONFIG.connected ? "Đã đồng bộ dữ liệu mới nhất." : "Không lấy được dữ liệu mới — vẫn dùng dữ liệu hiện có.", CONFIG.connected?"ok":"warn");
+});
+document.getElementById('exportBtn').addEventListener('click', ()=>{
+  const rows = [["Product_ID","Model","Ngành hàng","Nhóm sản phẩm","Phân khúc","Vai trò danh mục","Trạng thái vòng đời","Kênh bán","Product Manager"]];
+  DB.master.forEach(m=> rows.push([m[F.pid],m[F.model],m[F.industry],m[F.group],m[F.segment],m[F.role],m[F.lifecycle],m[F.channel],m[F.pm]]));
+  const csv = rows.map(r=>r.map(v=>`"${(""+(v??"")).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob = new Blob(["\uFEFF"+csv], {type:"text/csv;charset=utf-8;"});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "livotec_product_master_"+new Date().toISOString().slice(0,10)+".csv";
+  a.click();
+  toast("Đã xuất báo cáo CSV.", "ok");
+});
+
+document.getElementById('fanIcon').style.animation = "spin 7s linear infinite";
+
+/* ================================ INIT =================================== */
+function renderAll(){
+  renderOverview();
+  renderBusiness();
+  renderInventory();
+  renderPortfolio();
+  renderProjects();
+  renderAlerts();
+  renderPmPerf();
+  renderDataQA();
+}
+loadData();
 </script>
 </body>
 </html>
